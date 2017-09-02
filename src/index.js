@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './style.css';
-import { Home, Login, Register } from './containers';
+import { Home, Login } from './containers';
 import { App } from './containers';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 // Redux
@@ -19,9 +19,8 @@ ReactDOM.render(
 			<div>
 				<App />
     			<Route exact path="/" component={Home}/>
-    			<Route path="/home" component={Home}/>
-    			<Route path="/login" component={Login}/>
-    			<Route path="/register" component={Register}/>
+          		<Route path="/home" component={Home}/>
+          		<Route path="/login" component={Login}/>
 			</div>
   		</Router>
   	</Provider>, rootElement

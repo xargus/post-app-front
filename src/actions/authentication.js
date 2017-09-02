@@ -12,6 +12,12 @@ import {
     AUTH_LOGOUT
 } from './ActionTypes';
 
+export function loginWithGoogle(response) {
+    return (dispatch) => {
+        console.log(response);
+    };
+}
+
 export function logoutRequest() {
     return (dispatch) => {
         return Promise.resolve(dispatch(logout()));

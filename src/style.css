@@ -52,6 +52,11 @@ body {
     padding-bottom: 21px;
 }
 
+.auth .loginButton {
+    padding-bottom: 10px;
+    width: 90%;
+}
+
 /* WRITE */
 
 .write .materialize-textarea {

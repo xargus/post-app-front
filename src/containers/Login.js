@@ -54,7 +54,6 @@ class Login extends React.Component {
                             buttonText="Login With Google"
                             onSuccess={this.handleGoogleLogin}
                             onFailure={this.handleGoogleLogin}
-                            isSignedIn = true
                         />
                     </div>
                 </div>

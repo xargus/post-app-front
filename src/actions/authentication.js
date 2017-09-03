@@ -12,19 +12,10 @@ import {
     AUTH_LOGOUT
 } from './ActionTypes';
 
-export function loginWithGoogle(response) {
+export function logoutRequest(auth) {
     return (dispatch) => {
-        console.log(response);
-    };
-}
 
-export function logoutRequest() {
-    return (dispatch) => {
-        return Promise.resolve(dispatch(logout()));
-        // return axios.post('/api/account/logout')
-        // .then((response) => {
-        //     dispatch(logout());
-        // });
+        return auth.signOut().then(dispatch(logout()));
     };
 }
 
@@ -34,18 +25,18 @@ export function logout() {
     };
 }
 
-export function getStatusRequest() {
+export function getStatusRequest(auth) {
     return (dispatch) => {
-        // inform Get Status API is starting
         dispatch(getStatus());
 
-        return Promise.resolve(dispatch(getStatusSuccess('test')));
-        // return axios.get('/api/account/getInfo')
-        // .then((response) => {
-        //     dispatch(getStatusSuccess(response.data.info.username));
-        // }).catch((error) => {
-        //     dispatch(getStatusFailure());
-        // });
+        console.log("logged in : ", auth.isSignedIn.get());
+
+        if (auth.isSignedIn.get()) {
+            console.log("currentUser : ", auth.currentUser.get().getBasicProfile().getName());
+            dispatch(getStatusSuccess(auth.currentUser.get().getBasicProfile().getName()));
+        } else {
+            dispatch(getStatusFailure());
+        }
     };
 }
 
@@ -102,12 +93,13 @@ export function registerFailure(error) {
     };
 }
 
-export function loginRequest(username, password) {
+export function loginRequest(googleUser) {
     return (dispatch) => {
-        // Inform Login API is starting
+        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+        
         dispatch(login());
 
-        return Promise.resolve(dispatch(loginSuccess(username)));
+        return Promise.resolve(dispatch(loginSuccess(googleUser.getBasicProfile().getName())));
 
         // API REQUEST
         // return axios.post('/api/account/signin', { username, password })

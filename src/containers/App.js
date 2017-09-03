@@ -11,65 +11,26 @@ class App extends React.Component {
     }
 
      handleLogout() {
-        this.props.logout().then(
+        this.props.logout(window.gapi.auth2.getAuthInstance()).then(
             () => {
             	const Materialize = window.Materialize;
                 Materialize.toast('Good Bye!', 2000);
-
-                // // EMPTIES THE SESSION
-                // let loginData = {
-                //     isLoggedIn: false,
-                //     username: ''
-                // };
-
-                // document.cookie = 'key=' + btoa(JSON.stringify(loginData));
             }
         );
     }
 
 	componentDidMount() {
-        // get cookie by name
-        // function getCookie(name) {
-        //     var value = "; " + document.cookie;
-        //     var parts = value.split("; " + name + "=");
-        //     if (parts.length == 2) return parts.pop().split(";").shift();
-        // }
-
-        // // get loginData from cookie
-        // let loginData = getCookie('key');
-
-        // // if loginData is undefined, do nothing
-        // if(typeof loginData === "undefined") return;
-
-        // // decode base64 & parse json
-        // loginData = JSON.parse(atob(loginData));
-
-        // // if not logged in, do nothing
-        // if(!loginData.isLoggedIn) return;
-
-        // page refreshed & has a session in cookie,
-        // check whether this cookie is valid or not
-        this.props.getStatus().then(
-            () => {
-            	const Materialize = window.Materialize;
-                console.log(this.props.status);
-                // if session is not valid
-                if(!this.props.status.valid) {
-                    // logout the session
-                    // loginData = {
-                    //     isLoggedIn: false,
-                    //     username: ''
-                    // };
-
-                    // document.cookie='key=' + btoa(JSON.stringify(loginData));
-
-                    // and notify
-                    let toastContent = ('<span style="color: #FFB4BA">Your session is expired, please log in again</span>');
-                    Materialize.toast(toastContent, 4000);
-
-                }
-            }
-        );
+        window.gapi.load('auth2', () => {
+            // Retrieve the singleton for the GoogleAuth library and set up the client.
+            this.auth2 = window.gapi.auth2.init({
+                client_id: '519909259598-qq25td7clds3ht9jr4bc339i50po6l6g.apps.googleusercontent.com',
+                scope: 'profile email'
+            }).then(() => {
+                this.props.getStatus(window.gapi.auth2.getAuthInstance());
+            });
+        }, (error) => {
+            console('init error', error);
+        });
     }
 
 
@@ -91,11 +52,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getStatus: () => {
-            return dispatch(getStatusRequest());
+        getStatus: (auth) => {
+            return dispatch(getStatusRequest(auth));
         }, 
-        logout: () => {
-            return dispatch(logoutRequest());
+        logout: (auth) => {
+            return dispatch(logoutRequest(auth));
         }
     };
 };

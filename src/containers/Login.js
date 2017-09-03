@@ -1,44 +1,51 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { loginWithGoogle } from '../actions/authentication';
-import GoogleLogin from 'react-google-login';
+import { loginRequest } from '../actions/authentication';
 
 class Login extends React.Component {
 	constructor(props) {
         super(props);
-        // this.handleLogin = this.handleLogin.bind(this);
-        this.handleGoogleLogin = this.handleGoogleLogin.bind(this);
+
+        this.handleLogin = this.handleLogin.bind(this);
     }
 
-    handleGoogleLogin(response) {
-        this.props.login(response);
+    handleLogin(googleUser) {
+        this.props.login(googleUser).then(() => {
+            const Materialize = window.Materialize;
+
+            if(this.props.status === "SUCCESS") {
+                Materialize.toast('Welcome, ' + this.props.currentUser, 2000);
+                this.props.history.push('/');
+            } else {
+                Materialize.toast('login fail...', 2000);
+            }
+        });
     }
-    
-    // handleLogin(id, pw) {
-    //     return this.props.login(id, pw).then(
-    //         () => {
-    //         	const Materialize = window.Materialize;
 
-    //             if(this.props.status === "SUCCESS") {
-    //                 // create session data
-    //                 // let loginData = {
-    //                 //     isLoggedIn: true,
-    //                 //     username: id
-    //                 // };
+    componentDidMount() {
+        var loginHandler = this.handleLogin;
 
-    //                 // document.cookie = 'key=' + btoa(JSON.stringify(loginData));
+        window.gapi.signin2.render('signin', {
+            'scope': 'profile email',
+            'width': 240,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+            'onsuccess': onSuccess,
+            'onfailure': onFailure
+        });
 
-    //                 Materialize.toast('Welcome, ' + id + '!', 2000);
-    //                 this.props.history.push('/');
-    //                 return true;
-    //             } else {
-    //                 let toastContent = ('<span style="color: #FFB4BA">Incorrect username or password</span>');
-    //                 Materialize.toast(toastContent, 2000);
-    //                 return false;
-    //             }
-    //         }
-    //     );
-    // }
+        function onSuccess(googleUser) {
+            loginHandler(googleUser);
+        }
+
+        function onFailure(error) {
+            const Materialize = window.Materialize;
+            Materialize.toast('login fail...', 2000);
+
+            console.log(error);
+        }
+    }
     
     render() {
         return (
@@ -49,12 +56,7 @@ class Login extends React.Component {
                     </div>
 
                     <div className="card-content">
-                        <GoogleLogin
-                            clientId="519909259598-qq25td7clds3ht9jr4bc339i50po6l6g.apps.googleusercontent.com"
-                            buttonText="Login With Google"
-                            onSuccess={this.handleGoogleLogin}
-                            onFailure={this.handleGoogleLogin}
-                        />
+                        <div id="signin"></div>
                     </div>
                 </div>
             </div>
@@ -64,14 +66,15 @@ class Login extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        status: state.authentication.login.status
+        status: state.authentication.login.status,
+        currentUser: state.authentication.status.currentUser
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (response) => { 
-            return dispatch(loginWithGoogle(response)); 
+        login: (googleUser) => { 
+            return dispatch(loginRequest(googleUser)); 
         }
     };
 };

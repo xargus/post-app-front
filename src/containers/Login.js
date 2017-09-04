@@ -24,16 +24,19 @@ class Login extends React.Component {
 
     componentDidMount() {
         var loginHandler = this.handleLogin;
+        window.addEventListener('google-loaded', handleGoogleLoaded);
 
-        window.gapi.signin2.render('signin', {
-            'scope': 'profile email',
-            'width': 240,
-            'height': 50,
-            'longtitle': true,
-            'theme': 'dark',
-            'onsuccess': onSuccess,
-            'onfailure': onFailure
-        });
+        function handleGoogleLoaded() {
+            window.gapi.signin2.render('signin', {
+                'scope': 'profile email',
+                'width': 240,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onSuccess,
+                'onfailure': onFailure
+            });
+        }
 
         function onSuccess(googleUser) {
             loginHandler(googleUser);

@@ -20,17 +20,22 @@ class App extends React.Component {
     }
 
 	componentDidMount() {
-        window.gapi.load('auth2', () => {
-            // Retrieve the singleton for the GoogleAuth library and set up the client.
-            this.auth2 = window.gapi.auth2.init({
-                client_id: '519909259598-qq25td7clds3ht9jr4bc339i50po6l6g.apps.googleusercontent.com',
-                scope: 'profile email'
-            }).then(() => {
-                this.props.getStatus(window.gapi.auth2.getAuthInstance());
+        var thisProps = this.props;
+        window.addEventListener('google-loaded', handleGoogleLoaded);
+
+        function handleGoogleLoaded() {
+            window.gapi.load('auth2', () => {
+                // Retrieve the singleton for the GoogleAuth library and set up the client.
+                this.auth2 = window.gapi.auth2.init({
+                    client_id: '519909259598-qq25td7clds3ht9jr4bc339i50po6l6g.apps.googleusercontent.com',
+                    scope: 'profile email'
+                }).then(() => {
+                    thisProps.getStatus(window.gapi.auth2.getAuthInstance());
+                });
+            }, (error) => {
+                console('init error', error);
             });
-        }, (error) => {
-            console('init error', error);
-        });
+        }
     }
 
 

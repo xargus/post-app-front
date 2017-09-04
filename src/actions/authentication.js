@@ -1,11 +1,9 @@
-// import axios from 'axios';
+import $ from 'jquery';
+
 import {
     AUTH_LOGIN,
     AUTH_LOGIN_SUCCESS,
     AUTH_LOGIN_FAILURE,
-    AUTH_REGISTER,
-    AUTH_REGISTER_SUCCESS,
-    AUTH_REGISTER_FAILURE,
     AUTH_GET_STATUS,
     AUTH_GET_STATUS_SUCCESS,
     AUTH_GET_STATUS_FAILURE,
@@ -59,57 +57,24 @@ export function getStatusFailure() {
     };
 }
 
-export function registerRequest(username, password) {
-    return (dispatch) => {
-        // Inform Register API is starting
-        dispatch(register());
-
-        return Promise.resolve(dispatch(registerSuccess()));
-        // return axios.post('/api/account/signup', { username, password })
-        // .then((response) => {
-        //     dispatch(registerSuccess());
-        // }).catch((error) => {
-        //     dispatch(registerFailure(error.response.data.code));
-        // });
-    };
-}
-
-export function register() {
-    return {
-        type: AUTH_REGISTER
-    };
-}
-
-export function registerSuccess() {
-    return {
-        type: AUTH_REGISTER_SUCCESS,
-    };
-}
-
-export function registerFailure(error) {
-    return {
-        type: AUTH_REGISTER_FAILURE,
-        error
-    };
-}
-
 export function loginRequest(googleUser) {
     return (dispatch) => {
         console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-        
+
         dispatch(login());
 
-        return Promise.resolve(dispatch(loginSuccess(googleUser.getBasicProfile().getName())));
-
-        // API REQUEST
-        // return axios.post('/api/account/signin', { username, password })
-        // .then((response) => {
-        //     // SUCCEED
-        //     dispatch(loginSuccess(username));
-        // }).catch((error) => {
-        //     // FAILED
-        //     dispatch(loginFailure());
-        // });
+        return $.post('/post/api/register', {
+            userId: googleUser.getBasicProfile().getId(), 
+            oauthPlatform: 'google',  
+            accessToken: googleUser.getAuthResponse().access_token
+        })
+        .done((response) => {
+            console.log("register api result", response);
+            dispatch(loginSuccess(googleUser.getBasicProfile().getName()));
+        }).catch((error) => {
+            console.log("register fail", error);
+            dispatch(loginFailure());
+        });
     };
 }
 

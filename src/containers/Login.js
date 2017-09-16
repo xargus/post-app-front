@@ -23,10 +23,17 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
+        console.log('componentDidMount');
         var loginHandler = this.handleLogin;
+
+        if (window.gapi !== undefined) {
+            window.triggerGoogleLoaded();
+        }
+
         window.addEventListener('google-loaded', handleGoogleLoaded);
 
         function handleGoogleLoaded() {
+            console.log('handleGoogleLoaded()');
             window.gapi.signin2.render('signin', {
                 'scope': 'profile email',
                 'width': 240,

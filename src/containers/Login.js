@@ -36,7 +36,7 @@ class Login extends React.Component {
             console.log('handleGoogleLoaded()');
             window.gapi.signin2.render('signin', {
                 'scope': 'profile email',
-                'width': 240,
+                'width': 360,
                 'height': 50,
                 'longtitle': true,
                 'theme': 'dark',
@@ -56,7 +56,7 @@ class Login extends React.Component {
             console.log(error);
         }
     }
-    
+
     render() {
         return (
             <div className="auth">
@@ -83,8 +83,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (googleUser) => { 
-            return dispatch(loginRequest(googleUser)); 
+        login: (googleUser) => {
+            return dispatch(loginRequest(googleUser));
         }
     };
 };

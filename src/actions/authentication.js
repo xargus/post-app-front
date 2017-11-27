@@ -63,19 +63,57 @@ export function loginRequest(googleUser) {
 
         dispatch(login());
 
-        return $.post('/post/api/register', {
-            userId: googleUser.getBasicProfile().getId(), 
-            oauthPlatform: 'google',  
+        console.log("login request", googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token);
+
+        return $.post('post/api/auth/login', {
+            userId: googleUser.getBasicProfile().getId(),
+            oauthPlatform: 'google',
             accessToken: googleUser.getAuthResponse().access_token
         })
         .done((response) => {
-            console.log("register api result", response);
-            dispatch(loginSuccess(googleUser.getBasicProfile().getName()));
+            var parsed = JSON.parse(response);
+            console.log("login api result", response, parsed);
+            if (parsed.result === 'NOT_REGISTERED_USER') {
+              return register(googleUser, dispatch);
+            } else {
+              dispatch(loginSuccess(googleUser.getBasicProfile().getName()));
+            }
         }).catch((error) => {
-            console.log("register fail", error);
-            dispatch(loginFailure());
+            console.log("login fail", error);
+            loginFailureWithLogOut(dispatch);
         });
     };
+}
+
+export function register(googleUser, dispatch) {
+  return $.ajax({
+    type: 'POST',
+    url: 'post/api/auth/register',
+    data: {
+      userId: googleUser.getBasicProfile().getId(),
+      oauthPlatform: 'google',
+      accessToken: googleUser.getAuthResponse().access_token
+    },
+    success: (response) => {
+      var parsed = JSON.parse(response);
+      console.log("register api", response);
+      if (parsed.result === 'SUCCESS') {
+        console.log("register api result", parsed.result);
+        dispatch(loginSuccess(googleUser.getBasicProfile().getName()));
+      } else {
+        loginFailureWithLogOut(dispatch);
+      }
+    },
+    error:(error) => {
+      console.log("register fail", error);
+      loginFailureWithLogOut(dispatch);
+    },
+    async:false
+  });
+}
+
+function loginFailureWithLogOut(dispatch) {
+  window.gapi.auth2.getAuthInstance().signOut().then(dispatch(loginFailure()));
 }
 
 export function login() {

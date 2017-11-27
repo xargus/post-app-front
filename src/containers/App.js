@@ -20,10 +20,16 @@ class App extends React.Component {
     }
 
 	componentDidMount() {
+				console.log('componentDidMount()');
+				if (window.gapi !== undefined) {
+            window.triggerGoogleLoaded();
+        }
+
         var thisProps = this.props;
         window.addEventListener('google-loaded', handleGoogleLoaded);
 
         function handleGoogleLoaded() {
+						console.log('handleGoogleLoaded()');
             thisProps.getStatus(window.gapi.auth2.getAuthInstance());
         }
     }
@@ -49,7 +55,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getStatus: (auth) => {
             return dispatch(getStatusRequest(auth));
-        }, 
+        },
         logout: (auth) => {
             return dispatch(logoutRequest(auth));
         }

@@ -4,6 +4,10 @@ import {
     AUTH_LOGIN,
     AUTH_LOGIN_SUCCESS,
     AUTH_LOGIN_FAILURE,
+    AUTH_UNREGISTERED_USER,
+    AUTH_REGISTER,
+    AUTH_REGISTER_SUCCESS,
+    AUTH_REGISTER_FAILURE,
     AUTH_GET_STATUS,
     AUTH_GET_STATUS_SUCCESS,
     AUTH_GET_STATUS_FAILURE,
@@ -65,7 +69,7 @@ export function loginRequest(googleUser) {
 
         console.log("login request", googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token);
 
-        return $.post('post/api/auth/login', {
+        return $.post('http://localhost:8080/post/api/auth/login', {
             userId: googleUser.getBasicProfile().getId(),
             oauthPlatform: 'google',
             accessToken: googleUser.getAuthResponse().access_token
@@ -74,46 +78,68 @@ export function loginRequest(googleUser) {
             var parsed = JSON.parse(response);
             console.log("login api result", response, parsed);
             if (parsed.result === 'NOT_REGISTERED_USER') {
-              return register(googleUser, dispatch);
+              dispatch(unregisterUser());
             } else {
               dispatch(loginSuccess(googleUser.getBasicProfile().getName()));
             }
         }).catch((error) => {
             console.log("login fail", error);
-            loginFailureWithLogOut(dispatch);
+            dispatch(loginFailure());
         });
     };
 }
 
-export function register(googleUser, dispatch) {
-  return $.ajax({
-    type: 'POST',
-    url: 'post/api/auth/register',
-    data: {
-      userId: googleUser.getBasicProfile().getId(),
-      oauthPlatform: 'google',
-      accessToken: googleUser.getAuthResponse().access_token
-    },
-    success: (response) => {
-      var parsed = JSON.parse(response);
-      console.log("register api", response);
-      if (parsed.result === 'SUCCESS') {
-        console.log("register api result", parsed.result);
-        dispatch(loginSuccess(googleUser.getBasicProfile().getName()));
-      } else {
-        loginFailureWithLogOut(dispatch);
-      }
-    },
-    error:(error) => {
-      console.log("register fail", error);
-      loginFailureWithLogOut(dispatch);
-    },
-    async:false
-  });
+export function registerRequest(googleUser) {
+    return (dispatch) => {
+        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+
+        dispatch(register());
+
+        console.log("register request", googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token);
+
+        return $.post('http://localhost:8080/post/api/auth/register', {
+            userId: googleUser.getBasicProfile().getId(),
+            oauthPlatform: 'google',
+            accessToken: googleUser.getAuthResponse().access_token
+        })
+        .done((response) => {
+            var parsed = JSON.parse(response);
+            console.log("register api result", response, parsed);
+            if (parsed.result === 'SUCCESS') {
+              console.log("register api result", parsed.result);
+              dispatch(registerSuccess());
+            } else {
+              dispatch(registerFailure());
+            }
+        }).catch((error) => {
+            console.log("register fail", error);
+            dispatch(registerFailure());
+        });
+    };
 }
 
-function loginFailureWithLogOut(dispatch) {
-  window.gapi.auth2.getAuthInstance().signOut().then(dispatch(loginFailure()));
+export function register() {
+  return {
+    type: AUTH_REGISTER
+  }
+}
+
+export function registerSuccess() {
+  return {
+    type: AUTH_REGISTER_SUCCESS
+  }
+}
+
+export function registerFailure() {
+  return {
+    type: AUTH_REGISTER_FAILURE
+  }
+}
+
+export function unregisterUser() {
+  return {
+    type: AUTH_UNREGISTERED_USER
+  }
 }
 
 export function login() {

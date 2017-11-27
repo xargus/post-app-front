@@ -1,26 +1,52 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { loginRequest } from '../actions/authentication';
+import { loginRequest, registerRequest, logoutRequest } from '../actions/authentication';
 
 class Login extends React.Component {
 	constructor(props) {
         super(props);
 
         this.handleLogin = this.handleLogin.bind(this);
+				this.handleRegister = this.handleRegister.bind(this);
+				this.handleLogout = this.handleLogout.bind(this);
     }
 
     handleLogin(googleUser) {
         this.props.login(googleUser).then(() => {
             const Materialize = window.Materialize;
 
-            if(this.props.status === "SUCCESS") {
+						console.log('handleLogin result', this.props.status);
+            if(this.props.status === 'LOGIN_SUCCESS') {
                 Materialize.toast('Welcome, ' + this.props.currentUser, 2000);
                 this.props.history.push('/');
-            } else {
+            } else if (this.props.status === 'UNREGISTERED_USER') {
+								this.handleRegister();
+						} else {
                 Materialize.toast('login fail...', 2000);
+								this.handleLogout();
             }
         });
     }
+
+		handleRegister() {
+				console.log('handle register');
+				var googleUser = window.gapi.auth2.getAuthInstance().currentUser.get();
+				this.props.register(googleUser).then(() => {
+						const Materialize = window.Materialize;
+
+						console.log('handleLogin result', this.props.status);
+						if(this.props.status === 'REGISTER_SUCCESS') {
+								this.handleLogin(googleUser);
+						} else {
+								Materialize.toast('register fail...', 2000);
+								this.handleLogout();
+						}
+				});
+		}
+
+		handleLogout() {
+				this.props.logout(window.gapi.auth2.getAuthInstance());
+		}
 
     componentDidMount() {
         console.log('componentDidMount');
@@ -76,7 +102,7 @@ class Login extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        status: state.authentication.login.status,
+        status: state.authentication.status.status,
         currentUser: state.authentication.status.currentUser
     };
 };
@@ -85,6 +111,12 @@ const mapDispatchToProps = (dispatch) => {
     return {
         login: (googleUser) => {
             return dispatch(loginRequest(googleUser));
+        },
+				register: (googleUser) => {
+						return dispatch(registerRequest(googleUser));
+				},
+				logout: (auth) => {
+            return dispatch(logoutRequest(auth));
         }
     };
 };

@@ -69,7 +69,7 @@ export function loginRequest(googleUser) {
 
         console.log("login request", googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token);
 
-        return $.post('http://localhost:8080/post/api/auth/login', {
+        return $.post('post/api/auth/login', {
             userId: googleUser.getBasicProfile().getId(),
             oauthPlatform: 'google',
             accessToken: googleUser.getAuthResponse().access_token
@@ -97,7 +97,7 @@ export function registerRequest(googleUser) {
 
         console.log("register request", googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token);
 
-        return $.post('http://localhost:8080/post/api/auth/register', {
+        return $.post('post/api/auth/register', {
             userId: googleUser.getBasicProfile().getId(),
             oauthPlatform: 'google',
             accessToken: googleUser.getAuthResponse().access_token

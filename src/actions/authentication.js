@@ -14,6 +14,11 @@ import {
     AUTH_LOGOUT
 } from './ActionTypes';
 
+import {
+  LOGIN_URL,
+  REGISTER_URL
+} from './APIInfos';
+
 export function logoutRequest(auth) {
     return (dispatch) => {
 
@@ -35,29 +40,10 @@ export function getStatusRequest(auth) {
 
         if (auth.isSignedIn.get()) {
             console.log("currentUser : ", auth.currentUser.get().getBasicProfile().getName());
-            dispatch(getStatusSuccess(auth.currentUser.get().getBasicProfile().getName()));
+            dispatch(getStatusSuccess(auth.currentUser.get().getBasicProfile().getName(), auth.currentUser.get().getBasicProfile().getId(), auth.currentUser.get().getAuthResponse().access_token));
         } else {
             dispatch(getStatusFailure());
         }
-    };
-}
-
-export function getStatus() {
-    return {
-        type: AUTH_GET_STATUS
-    };
-}
-
-export function getStatusSuccess(username) {
-    return {
-        type: AUTH_GET_STATUS_SUCCESS,
-        username
-    };
-}
-
-export function getStatusFailure() {
-    return {
-        type: AUTH_GET_STATUS_FAILURE
     };
 }
 
@@ -69,22 +55,22 @@ export function loginRequest(googleUser) {
 
         console.log("login request", googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token);
 
-        return $.post('post/api/auth/login', {
+        return $.post(LOGIN_URL, {
             userId: googleUser.getBasicProfile().getId(),
             oauthPlatform: 'google',
             accessToken: googleUser.getAuthResponse().access_token
         })
         .done((response) => {
-            var parsed = JSON.parse(response);
-            console.log("login api result", response, parsed);
-            if (parsed.result === 'NOT_REGISTERED_USER') {
+            var jsonResult = JSON.parse(response);
+            console.log("login api result", response, jsonResult);
+            if (jsonResult.result === 'NOT_REGISTERED_USER') {
               dispatch(unregisterUser());
             } else {
-              dispatch(loginSuccess(googleUser.getBasicProfile().getName()));
+              dispatch(loginSuccess(googleUser.getBasicProfile().getName(), googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token));
             }
         }).catch((error) => {
             console.log("login fail", error);
-            dispatch(loginFailure());
+            dispatch(loginFailure(error));
         });
     };
 }
@@ -97,24 +83,45 @@ export function registerRequest(googleUser) {
 
         console.log("register request", googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token);
 
-        return $.post('post/api/auth/register', {
+        return $.post(REGISTER_URL, {
             userId: googleUser.getBasicProfile().getId(),
             oauthPlatform: 'google',
             accessToken: googleUser.getAuthResponse().access_token
         })
         .done((response) => {
-            var parsed = JSON.parse(response);
-            console.log("register api result", response, parsed);
-            if (parsed.result === 'SUCCESS') {
-              console.log("register api result", parsed.result);
+            var jsonResult = JSON.parse(response);
+            console.log("register api result", response, jsonResult);
+            if (jsonResult.result === 'SUCCESS') {
+              console.log("register api result", jsonResult.result);
               dispatch(registerSuccess());
             } else {
               dispatch(registerFailure());
             }
         }).catch((error) => {
             console.log("register fail", error);
-            dispatch(registerFailure());
+            dispatch(registerFailure(error));
         });
+    };
+}
+
+export function getStatus() {
+    return {
+        type: AUTH_GET_STATUS
+    };
+}
+
+export function getStatusSuccess(userName, userId, accessToken) {
+    return {
+        type: AUTH_GET_STATUS_SUCCESS,
+        userName,
+        userId,
+        accessToken
+    };
+}
+
+export function getStatusFailure() {
+    return {
+        type: AUTH_GET_STATUS_FAILURE
     };
 }
 
@@ -130,9 +137,10 @@ export function registerSuccess() {
   }
 }
 
-export function registerFailure() {
+export function registerFailure(error = '') {
   return {
-    type: AUTH_REGISTER_FAILURE
+    type: AUTH_REGISTER_FAILURE,
+    error: error
   }
 }
 
@@ -148,15 +156,18 @@ export function login() {
     };
 }
 
-export function loginSuccess(username) {
+export function loginSuccess(userName, userId, accessToken) {
     return {
         type: AUTH_LOGIN_SUCCESS,
-        username
+        userName,
+        userId,
+        accessToken
     };
 }
 
-export function loginFailure() {
+export function loginFailure(error = '') {
     return {
-        type: AUTH_LOGIN_FAILURE
+        type: AUTH_LOGIN_FAILURE,
+        error: error
     };
 }

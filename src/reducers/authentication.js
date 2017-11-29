@@ -4,9 +4,13 @@ import update from 'react-addons-update';
 const initialState = {
     status: {
         status: 'INIT',
-        error: -1,
-        isLoggedIn: false,
-        currentUser: ''
+        error: '',
+        isLoggedIn: false
+    },
+    userInfo: {
+      userName: '',
+      userId: '',
+      accessToken: ''
     }
 };
 
@@ -21,8 +25,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'LOGIN_WAITING' },
                     isLoggedIn: { $set: false },
-                    currentUser: { $set: '' },
-                    error: { $set: -1 }
+                    error: { $set: '' }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''}
                 }
             });
         case types.AUTH_LOGIN_SUCCESS:
@@ -30,8 +38,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'LOGIN_SUCCESS' },
                     isLoggedIn: { $set: true },
-                    currentUser: { $set: action.username },
-                    error: { $set: -1 }
+                    error: { $set: '' }
+                },
+                userInfo: {
+                    userName: { $set : action.userName },
+                    userId: { $set : action.userId },
+                    accessToken: { $set : action.accessToken }
                 }
             });
         case types.AUTH_LOGIN_FAILURE:
@@ -39,8 +51,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'LOGIN_FAILURE' },
                     isLoggedIn: { $set: false },
-                    currentUser: { $set: '' },
-                    error: { $set: -1 }
+                    error: { $set: '' }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''}
                 }
             });
         case types.AUTH_UNREGISTERED_USER:
@@ -48,8 +64,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'UNREGISTERED_USER' },
                     isLoggedIn: { $set: false },
-                    currentUser: { $set: '' },
-                    error: { $set: -1 }
+                    error: { $set: '' }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''}
                 }
             });
 
@@ -58,8 +78,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'REGISTER_WAITING' },
                     isLoggedIn: { $set: false },
-                    currentUser: { $set: '' },
-                    error: { $set: -1 }
+                    error: { $set: '' }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''}
                 }
             });
         case types.AUTH_REGISTER_SUCCESS:
@@ -67,8 +91,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'REGISTER_SUCCESS' },
                     isLoggedIn: { $set: false },
-                    currentUser: { $set: '' },
-                    error: { $set: -1 }
+                    error: { $set: '' }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''}
                 }
             });
         case types.AUTH_REGISTER_FAILURE:
@@ -76,8 +104,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'REGISTER_FAILURE' },
                     isLoggedIn: { $set: false },
-                    currentUser: { $set: '' },
                     error: { $set: action.error }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''}
                 }
             });
 
@@ -86,8 +118,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'STATUS_WATTING'},
                     isLoggedIn: { $set: false },
-                    currentUser: { $set: '' },
-                    error: { $set: -1 }
+                    error: { $set: '' }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''}
                 }
             });
         case types.AUTH_GET_STATUS_SUCCESS:
@@ -95,8 +131,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'GET_STATUS_SUCCESS'},
                     isLoggedIn: { $set: true },
-                    currentUser: { $set: action.username },
-                    error: { $set: -1 }
+                    error: { $set: '' }
+                },
+                userInfo: {
+                  userName: { $set : action.userName },
+                  userId: { $set : action.userId },
+                  accessToken: { $set : action.accessToken }
                 }
             });
         case types.AUTH_GET_STATUS_FAILURE:
@@ -104,8 +144,12 @@ export default function authentication(state, action) {
                 status: {
                     status: { $set: 'GET_STATUS_FAILURE'},
                     isLoggedIn: { $set: false },
-                    currentUser: { $set: '' },
                     error: { $set: action.error }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''}
                 }
             });
 
@@ -115,9 +159,13 @@ export default function authentication(state, action) {
             return update(state, {
                 status: {
                     status: { $set: 'LOGOUT'},
-                    error: { $set: -1 },
-                    isLoggedIn: { $set: false },
-                    currentUser: { $set: '' }
+                    error: { $set: '' },
+                    isLoggedIn: { $set: false }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''}
                 }
             });
 

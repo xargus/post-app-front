@@ -15,11 +15,11 @@ class Login extends React.Component {
         this.props.login(googleUser).then(() => {
             const Materialize = window.Materialize;
 
-						console.log('handleLogin result', this.props.status);
-            if(this.props.status === 'LOGIN_SUCCESS') {
-                Materialize.toast('Welcome, ' + this.props.currentUser, 2000);
+						console.log('handleLogin result', this.props.userInfo, this.props.status);
+            if(this.props.status.status === 'LOGIN_SUCCESS') {
+                Materialize.toast('Welcome, ' + this.props.userInfo.userName, 2000);
                 this.props.history.push('/');
-            } else if (this.props.status === 'UNREGISTERED_USER') {
+            } else if (this.props.status.status === 'UNREGISTERED_USER') {
 								this.handleRegister();
 						} else {
                 Materialize.toast('login fail...', 2000);
@@ -102,8 +102,8 @@ class Login extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        status: state.authentication.status.status,
-        currentUser: state.authentication.status.currentUser
+        status: state.authentication.status,
+        userInfo: state.authentication.userInfo
     };
 };
 

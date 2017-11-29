@@ -61,7 +61,7 @@ body {
 
 .write .materialize-textarea {
     padding: 0px;
-    padding-bottom: 36px;
+    padding-bottom: 0px;
     margin-bottom: 0px;
     font-size: 18px;
 }

@@ -8,16 +8,25 @@ class App extends React.Component {
 	constructor(props) {
         super(props);
         this.handleLogout = this.handleLogout.bind(this);
-    }
+				this.handleGoogleLoaded = this.handleGoogleLoaded.bind(this);
+  }
 
-     handleLogout() {
+  handleLogout() {
         this.props.logout(window.gapi.auth2.getAuthInstance()).then(
             () => {
             	const Materialize = window.Materialize;
                 Materialize.toast('Good Bye!', 2000);
             }
         );
-    }
+  }
+
+	handleGoogleLoaded() {
+			console.log('handleGoogleLoaded()');
+			this.props.getStatus(window.gapi.auth2.getAuthInstance()).then((result) => {
+					console.log("get status", result);
+					// this.props.history.push('/');
+			});
+	}
 
 	componentDidMount() {
 				console.log('componentDidMount()');
@@ -25,13 +34,7 @@ class App extends React.Component {
             window.triggerGoogleLoaded();
         }
 
-        var thisProps = this.props;
-        window.addEventListener('google-loaded', handleGoogleLoaded);
-
-        function handleGoogleLoaded() {
-						console.log('handleGoogleLoaded()');
-            thisProps.getStatus(window.gapi.auth2.getAuthInstance());
-        }
+        window.addEventListener('google-loaded', this.handleGoogleLoaded);
     }
 
 

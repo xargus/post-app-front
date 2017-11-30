@@ -38,12 +38,16 @@ export function getStatusRequest(auth) {
 
         console.log("logged in : ", auth.isSignedIn.get());
 
-        if (auth.isSignedIn.get()) {
-            console.log("currentUser : ", auth.currentUser.get().getBasicProfile().getName());
-            dispatch(getStatusSuccess(auth.currentUser.get().getBasicProfile().getName(), auth.currentUser.get().getBasicProfile().getId(), auth.currentUser.get().getAuthResponse().access_token));
-        } else {
-            dispatch(getStatusFailure());
-        }
+        return new Promise((resolve, reject) => {
+            if (auth.isSignedIn.get()) {
+                console.log("currentUser : ", auth.currentUser.get().getBasicProfile().getName());
+                dispatch(getStatusSuccess(auth.currentUser.get().getBasicProfile().getName(), auth.currentUser.get().getBasicProfile().getId(), auth.currentUser.get().getAuthResponse().access_token));
+                resolve(true);
+            } else {
+                dispatch(getStatusFailure());
+                resolve(false);
+            }
+        });
     };
 }
 

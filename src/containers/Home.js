@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Write, MemoList } from '../components';
-import {memoAddPostRequest, memoListPostRequest} from '../actions/memo';
+import {memoAddPostRequest, memoListPostRequest, memoClear} from '../actions/memo';
 
 class Home extends React.Component {
 
@@ -9,14 +9,31 @@ class Home extends React.Component {
 		super(props);
 		this.handleAddPost = this.handleAddPost.bind(this);
 		this.handleMemoListRequest = this.handleMemoListRequest.bind(this);
+
+		this.state = {
+				isWattingForRequest: false,
+				count: 0
+		};
 	}
 
 	handleMemoListRequest() {
-		if (this.props.isLoggedIn) {
-			this.props.memoListPost(this.props.userId, this.props.accessToken, 0).then(() => {
-						console.log(this.props.memoList);
-			});
+		if (!this.props.isLoggedIn) {
+				return;
 		}
+
+		const start = this.props.memoList.length;
+		this.setState({
+				isWattingForRequest: true,
+				count: start
+		});
+		this.props.memoListPost(this.props.userId, this.props.accessToken, start, 10).then(() => {
+					console.log(this.props.memoList);
+					if (this.props.memoList.length > this.state.count) {
+							this.setState({
+									isWattingForRequest: false
+							});
+					}
+		});
 	}
 
 	handleAddPost(contents) {
@@ -27,7 +44,7 @@ class Home extends React.Component {
                 } else {
                     Materialize.toast('Fail...', 2000);
                 }
-
+								this.props.memoClear();
 								this.handleMemoListRequest();
             }
         );
@@ -35,7 +52,10 @@ class Home extends React.Component {
 
     render() {
     	const write = (<Write onPost = {this.handleAddPost} />);
-			const memoList = (<MemoList memoInfos = {this.props.memoList} requestMemoList = {this.handleMemoListRequest} />);
+			const memoList = (<MemoList
+														memoInfos = {this.props.memoList}
+														requestMemoList = {this.handleMemoListRequest}
+														isWattingForRequest = { this.state.isWattingForRequest } />);
         return (
             <div className = "wrapper">
                 {this.props.isLoggedIn ? write : undefined}
@@ -60,8 +80,11 @@ const mapDispatchToProps = (dispatch) => {
 		memoAddPost : (userId, accessToken, contents) => {
 			return dispatch(memoAddPostRequest(userId, accessToken, contents));
 		},
-		memoListPost : (userId, accessToken, start) => {
-			return dispatch(memoListPostRequest(userId, accessToken, start));
+		memoListPost : (userId, accessToken, start, limit) => {
+			return dispatch(memoListPostRequest(userId, accessToken, start, limit));
+		},
+		memoClear : () => {
+			return dispatch(memoClear());
 		}
 	};
 }

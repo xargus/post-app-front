@@ -5,8 +5,11 @@ body {
 
 /* Authentication */
 .auth {
+  /*padding: 0px 50px 0px 50px;*/
+  transform: translate(50%, 0%);
+  width: 50%;
   margin-top: 50px;
-    text-align: center;
+  text-align: center;
 }
 
 .logo {
@@ -27,7 +30,6 @@ body {
 }
 
 .auth .card {
-    width: 400px;
     margin: 0 auto;
 }
 

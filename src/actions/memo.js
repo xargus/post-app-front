@@ -5,12 +5,23 @@ import {
     MEMO_ADD_POST_FAILURE,
     MEMO_LIST_POST,
     MEMO_LIST_POST_SUCCESS,
-    MEMO_LIST_POST_FAILURE
+    MEMO_LIST_POST_FAILURE,
+    MEMO_CLEAR
 } from './ActionTypes';
 
 import {
   MEMO_URL
 } from './APIInfos'
+
+export function memoClear() {
+    return (dispatch) => {
+        dispatch(() => {
+            return {
+                type: MEMO_CLEAR
+            }
+        });
+    }
+}
 
 export function memoAddPostRequest(userId, accessToken, contents) {
     return (dispatch) => {
@@ -36,7 +47,7 @@ export function memoAddPostRequest(userId, accessToken, contents) {
     };
 }
 
-export function memoListPostRequest(userId, accessToken, start, limit = 10) {
+export function memoListPostRequest(userId, accessToken, start, limit) {
     return (dispatch) => {
         dispatch(memoListPost());
 

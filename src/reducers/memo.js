@@ -42,8 +42,7 @@ export default function memo(state, action) {
 						post : {
 							status : { $set : 'LIST_POST_WATTING' },
 							error : { $set : ''}
-						},
-						memoList : { $set: [] }
+						}
 				});
 		case types.MEMO_LIST_POST_SUCCESS:
 				return update(state, {
@@ -51,7 +50,7 @@ export default function memo(state, action) {
 						status : { $set : 'LIST_POST_SUCCESS' },
 						error : { $set : ''}
 					},
-					memoList : { $set: action.memoList }
+					memoList : { $push: action.memoList }
 				});
 		case types.MEMO_LIST_POST_FAILURE:
 				return update(state, {
@@ -59,6 +58,10 @@ export default function memo(state, action) {
 							status : { $set : 'LIST_POST_FAILURE' },
 							error : { $set : action.error}
 						},
+						memoList : { $set: [] }
+				});
+		case types.MEMO_CLEAR:
+				return update(state, {
 						memoList : { $set: [] }
 				});
 		default :

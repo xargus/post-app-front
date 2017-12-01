@@ -62,7 +62,7 @@ class Login extends React.Component {
             console.log('handleGoogleLoaded()');
             window.gapi.signin2.render('signin', {
                 'scope': 'profile email',
-                'width': 360,
+                'width': 'standard',
                 'height': 50,
                 'longtitle': true,
                 'theme': 'dark',

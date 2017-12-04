@@ -19,9 +19,8 @@ class MemoList extends React.Component {
   render() {
     const mapToCompoents = (memoInfos) => {
         return memoInfos.map( (memo, i) => {
-            console.log('new memo', i);
             return (
-                <Memo memoInfo = {memo} key = {memo._id}/>
+                <Memo memoInfo = {memo} key = {i}/>
             );
         });
     };

@@ -15,11 +15,7 @@ import {
 
 export function memoClear() {
     return (dispatch) => {
-        dispatch(() => {
-            return {
-                type: MEMO_CLEAR
-            }
-        });
+      dispatch(memoClearReturn());
     }
 }
 
@@ -59,6 +55,7 @@ export function memoListPostRequest(userId, accessToken, start, limit) {
             accessToken: accessToken
         })
         .done((response) => {
+            console.log("memo list api result", response);
             var jsonResult = JSON.parse(response);
             if (jsonResult.result === 'SUCCESS') {
                 dispatch(memoListPostSuccess(jsonResult.memoList));
@@ -71,6 +68,12 @@ export function memoListPostRequest(userId, accessToken, start, limit) {
             dispatch(memoListPostFailure(error));
         });
     };
+}
+
+export function memoClearReturn() {
+  return {
+      type: MEMO_CLEAR
+  };
 }
 
 export function memoListPost() {

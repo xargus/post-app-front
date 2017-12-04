@@ -26,8 +26,10 @@ class Home extends React.Component {
 				isWattingForRequest: true,
 				count: start
 		});
+
+		console.log("request memo List");
 		this.props.memoListPost(this.props.userId, this.props.accessToken, start, 10).then(() => {
-					console.log(this.props.memoList);
+					console.log("memo List result",this.props.memoList.length, this.state.count);
 					if (this.props.memoList.length > this.state.count) {
 							this.setState({
 									isWattingForRequest: false
@@ -41,11 +43,12 @@ class Home extends React.Component {
             	const Materialize = window.Materialize;
                 if(this.props.postStatus.status === 'ADD_POST_SUCCESS') {
                     Materialize.toast('Success!', 2000);
+
+										this.props.memoClear();
+										this.handleMemoListRequest();
                 } else {
                     Materialize.toast('Fail...', 2000);
                 }
-								this.props.memoClear();
-								this.handleMemoListRequest();
             }
         );
     }

@@ -17,15 +17,12 @@ class Home extends React.Component {
 		};
 	}
 
-	handleMemoUpdate(memoId, content) {
-			this.props.memoUpdate(this.props.userId, this.props.accessToken, memoId, content).then(() => {
-						console.log("home update result",this.props.postStatus);
+	handleMemoUpdate(memoId, content, index) {
+			this.props.memoUpdate(this.props.userId, this.props.accessToken, memoId, content, index).then(() => {
+						console.log("home update result",this.props.memoList);
 						const Materialize = window.Materialize;
 						if (this.props.postStatus.status === 'UPDATE_SUCCESS') {
 								Materialize.toast('Memo Update Success!', 2000);
-
-								this.props.memoClear();
-								this.handleMemoListRequest();
 						} else {
 								Materialize.toast('Memo Update Fail...', 2000);
 						}
@@ -106,8 +103,8 @@ const mapDispatchToProps = (dispatch) => {
 		memoClear : () => {
 			return dispatch(memoClear());
 		},
-		memoUpdate: (userId, accessToken, memoId, content) => {
-				return dispatch(memoUpdateRequest(userId, accessToken, memoId, content));
+		memoUpdate: (userId, accessToken, memoId, content, index) => {
+				return dispatch(memoUpdateRequest(userId, accessToken, memoId, content, index));
 		}
 	};
 }

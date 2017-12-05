@@ -20,7 +20,7 @@ class MemoList extends React.Component {
     const mapToCompoents = (memoInfos) => {
         return memoInfos.map( (memo, i) => {
             return (
-                <Memo memoInfo = {memo} key = {i} memoUpdate = { this.props.memoUpdate }/>
+                <Memo memoInfo = {memo} key = {i} memoUpdate = { this.props.memoUpdate } index = {i}/>
             );
         });
     };

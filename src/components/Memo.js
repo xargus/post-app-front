@@ -22,7 +22,7 @@ class Memo extends React.Component {
 
   toggleEdit() {
     if (this.state.editMode) {
-        this.props.memoUpdate(this.props.memoInfo._id, this.state.value);
+        this.props.memoUpdate(this.props.memoInfo._id, this.state.value, this.props.index);
     }
 
     this.setState({

@@ -77,6 +77,11 @@ export default function memo(state, action) {
 						post: {
 								status : { $set: 'UPDATE_SUCCESS' },
 								error : { $set : ''}
+						},
+						memoList: {
+							[action.index] : {
+								content : { $set : action.content }
+							}
 						}
 				});
 		case types.MEMO_UPDATE_FAILURE:

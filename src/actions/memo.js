@@ -16,7 +16,7 @@ import {
   MEMO_URL
 } from './APIInfos'
 
-export function memoUpdateRequest(userId, accessToken, memoId, content) {
+export function memoUpdateRequest(userId, accessToken, memoId, content, index) {
     return (dispatch) => {
         dispatch(memoUpdate());
 
@@ -31,7 +31,7 @@ export function memoUpdateRequest(userId, accessToken, memoId, content) {
             var jsonResult = JSON.parse(response);
             console.log("memo update result", jsonResult);
             if (jsonResult.result === 'SUCCESS') {
-                dispatch(memoUpdateSuccess());
+                dispatch(memoUpdateSuccess(index, content));
             } else {
                 dispatch(memoUpdateFailure());
             }
@@ -150,9 +150,11 @@ export function memoUpdate() {
     }
 }
 
-export function memoUpdateSuccess() {
+export function memoUpdateSuccess(index, content) {
     return {
-      type : MEMO_UPDATE_SUCCESS
+      type : MEMO_UPDATE_SUCCESS,
+      index : index,
+      content : content
     }
 }
 

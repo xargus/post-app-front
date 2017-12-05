@@ -68,7 +68,7 @@ export default function memo(state, action) {
 		case types.MEMO_UPDATE:
 				return update(state, {
 									post : {
-											status : { $set: 'MEMO_UPDATE' },
+											status : { $set: 'UPDATE_WATTING' },
 											error : { $set : '' }
 									}
 				});
@@ -88,8 +88,31 @@ export default function memo(state, action) {
 				return update(state, {
 							post: {
 									status : { $set: 'UPDATE_FAILURE' },
-									error : { $set : '' }
+									error : { $set : action.error }
 							}
+				});
+
+		case types.MEMO_DELETE:
+				return update(state, {
+						post: {
+								status : { $set: 'DELETE_WATTING' },
+								error : { $set : '' }
+						}
+				});
+		case types.MEMO_DELETE_SUCCESS:
+				return update(state, {
+						post: {
+								status : { $set: 'DELETE_SUCCESS' },
+								error : { $set : '' }
+						},
+						memoList: { $splice : [[action.index, 1]]}
+				});
+		case types.MEMO_DELETE_FAILURE:
+				return update(state, {
+						post: {
+								status : { $set: 'DELETE_FAILURE' },
+								error : { $set : action.error }
+						}
 				});
 		default :
 			return state;

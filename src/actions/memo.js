@@ -9,12 +9,40 @@ import {
     MEMO_CLEAR,
     MEMO_UPDATE,
     MEMO_UPDATE_SUCCESS,
-    MEMO_UPDATE_FAILURE
+    MEMO_UPDATE_FAILURE,
+    MEMO_DELETE,
+    MEMO_DELETE_SUCCESS,
+    MEMO_DELETE_FAILURE
 } from './ActionTypes';
 
 import {
   MEMO_URL
 } from './APIInfos'
+
+export function memoDeleteRequest(userId, accessToken, memoId, index) {
+    return (dispatch) => {
+        dispatch(memoDelete());
+
+        return $.post(MEMO_URL, {
+            action: 'DELETE',
+            memoId: memoId,
+            userId: userId,
+            accessToken: accessToken
+        })
+        .done((response) => {
+            var jsonResult = JSON.parse(response);
+            console.log("memo delete result", jsonResult);
+            if (jsonResult.result === 'SUCCESS') {
+                dispatch(memoDeleteSuccess(index));
+            } else {
+                dispatch(memoDeleteFailure());
+            }
+        })
+        .catch((error) => {
+            dispatch(memoDeleteFailure());
+        });
+    }
+}
 
 export function memoUpdateRequest(userId, accessToken, memoId, content, index) {
     return (dispatch) => {
@@ -162,5 +190,25 @@ export function memoUpdateFailure(error = '') {
     return {
       type : MEMO_UPDATE_FAILURE,
       error: error
+    }
+}
+
+export function memoDelete() {
+    return {
+        type: MEMO_DELETE
+    }
+}
+
+export function memoDeleteSuccess(index) {
+    return {
+        type: MEMO_DELETE_SUCCESS,
+        index: index
+    }
+}
+
+export function memoDeleteFailure(error = '') {
+    return {
+        type: MEMO_DELETE_FAILURE,
+        error: error
     }
 }

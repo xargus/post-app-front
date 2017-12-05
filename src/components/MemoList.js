@@ -2,6 +2,7 @@ import React from 'react';
 import { Memo } from '../components';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class MemoList extends React.Component {
 
@@ -9,7 +10,6 @@ class MemoList extends React.Component {
 		this.props.requestMemoList();
 
     $(window).scroll(() => {
-					// WHEN HEIGHT UNDER SCROLLBOTTOM IS LESS THEN 250
 					if (!this.props.isWattingForRequest && $(document).height() - $(window).height() - $(window).scrollTop() < 10) {
 							this.props.requestMemoList();
 					}
@@ -20,13 +20,23 @@ class MemoList extends React.Component {
     const mapToCompoents = (memoInfos) => {
         return memoInfos.map( (memo, i) => {
             return (
-                <Memo memoInfo = {memo} key = {i} memoUpdate = { this.props.memoUpdate } index = {i}/>
+                <Memo
+                    memoInfo = {memo}
+                    key = {memo._id}
+                    memoUpdate = { this.props.memoUpdate }
+                    memoDelete = { this.props.memoDelete }
+                    index = {i}/>
             );
         });
     };
     return (
       <div>
-          { mapToCompoents(this.props.memoInfos) }
+          <ReactCSSTransitionGroup
+                        transitionName="memo"
+                        transitionEnterTimeout={2000}
+                        transitionLeaveTimeout={1000}>
+                            { mapToCompoents(this.props.memoInfos) }
+          </ReactCSSTransitionGroup>
       </div>
     );
   }

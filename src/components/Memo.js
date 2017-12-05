@@ -12,6 +12,11 @@ class Memo extends React.Component {
     };
     this.toggleEdit = this.toggleEdit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  handleDelete() {
+      this.props.memoDelete(this.props.memoInfo._id, this.props.index);
   }
 
   handleChange(e) {
@@ -40,7 +45,7 @@ class Memo extends React.Component {
           </a>
           <ul id={'dropdown-'+this.props.memoInfo._id} className='dropdown-content'>
                 <li><a onClick = {this.toggleEdit}>Edit</a></li>
-                <li><a>Remove</a></li>
+                <li><a onClick = {this.handleDelete}>Remove</a></li>
           </ul>
       </div>
     );

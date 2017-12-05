@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Write, MemoList } from '../components';
-import {memoAddPostRequest, memoListPostRequest, memoClear, memoUpdateRequest} from '../actions/memo';
+import {memoAddPostRequest, memoListPostRequest, memoClear, memoUpdateRequest, memoDeleteRequest} from '../actions/memo';
 
 class Home extends React.Component {
 
@@ -10,11 +10,24 @@ class Home extends React.Component {
 		this.handleAddPost = this.handleAddPost.bind(this);
 		this.handleMemoListRequest = this.handleMemoListRequest.bind(this);
 		this.handleMemoUpdate = this.handleMemoUpdate.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 
 		this.state = {
 				isWattingForRequest: false,
 				count: 0
 		};
+	}
+
+	handleDelete(memoId, index) {
+			this.props.memoDelete(this.props.userId, this.props.accessToken, memoId, index).then(() => {
+					console.log("home delete result",this.props.memoList);
+					const Materialize = window.Materialize;
+					if (this.props.postStatus.status === 'DELETE_SUCCESS') {
+							Materialize.toast('Memo Delete Success!', 2000);
+					} else {
+							Materialize.toast('Memo Delete Fail...', 2000);
+					}
+			});
 	}
 
 	handleMemoUpdate(memoId, content, index) {
@@ -72,7 +85,8 @@ class Home extends React.Component {
 														memoInfos = {this.props.memoList}
 														requestMemoList = {this.handleMemoListRequest}
 														isWattingForRequest = { this.state.isWattingForRequest }
-														memoUpdate = { this.handleMemoUpdate } />);
+														memoUpdate = { this.handleMemoUpdate }
+														memoDelete = { this.handleDelete } />);
         return (
             <div className = "wrapper">
                 {this.props.isLoggedIn ? write : undefined}
@@ -105,6 +119,9 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		memoUpdate: (userId, accessToken, memoId, content, index) => {
 				return dispatch(memoUpdateRequest(userId, accessToken, memoId, content, index));
+		},
+		memoDelete: (userId, accessToken, memoId, index) => {
+				return dispatch(memoDeleteRequest(userId, accessToken, memoId, index));
 		}
 	};
 }

@@ -64,6 +64,28 @@ export default function memo(state, action) {
 				return update(state, {
 						memoList : { $set: [] }
 				});
+
+		case types.MEMO_UPDATE:
+				return update(state, {
+									post : {
+											status : { $set: 'MEMO_UPDATE' },
+											error : { $set : '' }
+									}
+				});
+		case types.MEMO_UPDATE_SUCCESS:
+				return update(state, {
+						post: {
+								status : { $set: 'UPDATE_SUCCESS' },
+								error : { $set : ''}
+						}
+				});
+		case types.MEMO_UPDATE_FAILURE:
+				return update(state, {
+							post: {
+									status : { $set: 'UPDATE_FAILURE' },
+									error : { $set : '' }
+							}
+				});
 		default :
 			return state;
 	}

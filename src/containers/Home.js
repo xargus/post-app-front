@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Write, MemoList } from '../components';
-import {memoAddPostRequest, memoListPostRequest, memoClear} from '../actions/memo';
+import {memoAddPostRequest, memoListPostRequest, memoClear, memoUpdateRequest} from '../actions/memo';
 
 class Home extends React.Component {
 
@@ -9,11 +9,27 @@ class Home extends React.Component {
 		super(props);
 		this.handleAddPost = this.handleAddPost.bind(this);
 		this.handleMemoListRequest = this.handleMemoListRequest.bind(this);
+		this.handleMemoUpdate = this.handleMemoUpdate.bind(this);
 
 		this.state = {
 				isWattingForRequest: false,
 				count: 0
 		};
+	}
+
+	handleMemoUpdate(memoId, content) {
+			this.props.memoUpdate(this.props.userId, this.props.accessToken, memoId, content).then(() => {
+						console.log("home update result",this.props.postStatus);
+						const Materialize = window.Materialize;
+						if (this.props.postStatus.status === 'UPDATE_SUCCESS') {
+								Materialize.toast('Memo Update Success!', 2000);
+
+								this.props.memoClear();
+								this.handleMemoListRequest();
+						} else {
+								Materialize.toast('Memo Update Fail...', 2000);
+						}
+			});
 	}
 
 	handleMemoListRequest() {
@@ -58,7 +74,8 @@ class Home extends React.Component {
 			const memoList = (<MemoList
 														memoInfos = {this.props.memoList}
 														requestMemoList = {this.handleMemoListRequest}
-														isWattingForRequest = { this.state.isWattingForRequest } />);
+														isWattingForRequest = { this.state.isWattingForRequest }
+														memoUpdate = { this.handleMemoUpdate } />);
         return (
             <div className = "wrapper">
                 {this.props.isLoggedIn ? write : undefined}
@@ -88,6 +105,9 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		memoClear : () => {
 			return dispatch(memoClear());
+		},
+		memoUpdate: (userId, accessToken, memoId, content) => {
+				return dispatch(memoUpdateRequest(userId, accessToken, memoId, content));
 		}
 	};
 }

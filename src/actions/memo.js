@@ -6,12 +6,41 @@ import {
     MEMO_LIST_POST,
     MEMO_LIST_POST_SUCCESS,
     MEMO_LIST_POST_FAILURE,
-    MEMO_CLEAR
+    MEMO_CLEAR,
+    MEMO_UPDATE,
+    MEMO_UPDATE_SUCCESS,
+    MEMO_UPDATE_FAILURE
 } from './ActionTypes';
 
 import {
   MEMO_URL
 } from './APIInfos'
+
+export function memoUpdateRequest(userId, accessToken, memoId, content) {
+    return (dispatch) => {
+        dispatch(memoUpdate());
+
+        return $.post(MEMO_URL, {
+            action: 'UPDATE',
+            memoId: memoId,
+            content: content,
+            userId: userId,
+            accessToken: accessToken
+        })
+        .done((response) => {
+            var jsonResult = JSON.parse(response);
+            console.log("memo update result", jsonResult);
+            if (jsonResult.result === 'SUCCESS') {
+                dispatch(memoUpdateSuccess());
+            } else {
+                dispatch(memoUpdateFailure());
+            }
+        })
+        .catch((error) => {
+            dispatch(memoUpdateFailure(error));
+        })
+    }
+}
 
 export function memoClear() {
     return (dispatch) => {
@@ -113,4 +142,23 @@ export function memoAddPostFailure(error = '') {
         type : MEMO_ADD_POST_FAILURE,
         error: error
     };
+}
+
+export function memoUpdate() {
+    return {
+      type : MEMO_UPDATE
+    }
+}
+
+export function memoUpdateSuccess() {
+    return {
+      type : MEMO_UPDATE_SUCCESS
+    }
+}
+
+export function memoUpdateFailure(error = '') {
+    return {
+      type : MEMO_UPDATE_FAILURE,
+      error: error
+    }
 }

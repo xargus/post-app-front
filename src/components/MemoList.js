@@ -20,7 +20,7 @@ class MemoList extends React.Component {
     const mapToCompoents = (memoInfos) => {
         return memoInfos.map( (memo, i) => {
             return (
-                <Memo memoInfo = {memo} key = {i}/>
+                <Memo memoInfo = {memo} key = {i} memoUpdate = { this.props.memoUpdate }/>
             );
         });
     };
@@ -33,11 +33,15 @@ class MemoList extends React.Component {
 }
 
 MemoList.propTypes = {
-    memoInfos: PropTypes.array
+    memoInfos: PropTypes.array,
+    memoUpdate: PropTypes.func
 };
 
 MemoList.defaultProps = {
-    memoInfos: []
+    memoInfos: [],
+    memoUpdate: (memoId, content) => {
+        console.log("memoUpdate function is Null");
+    }
 };
 
 export default MemoList;

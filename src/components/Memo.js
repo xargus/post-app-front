@@ -1,4 +1,5 @@
 import React from 'react';
+import TimeAgo from 'react-timeago';
 
 /* eslint-disable no-template-curly-in-string */
 /*eslint-env jquery*/
@@ -53,7 +54,7 @@ class Memo extends React.Component {
     const memoView = (
       <div className = 'card'>
           <div className = 'info'>
-              <a className = 'username'>'title'</a>
+              <a className = 'username'>'title'</a> <TimeAgo date={this.props.memoInfo.updateDate}/>
               { dropDownButton }
               <div className = 'card-content'>
                   {this.props.memoInfo.content}
@@ -104,10 +105,3 @@ class Memo extends React.Component {
 }
 
 export default Memo;
-
-Memo.defaultProps = {
-    memoInfo: {
-        _id: '',
-        content: ''
-    }
-};

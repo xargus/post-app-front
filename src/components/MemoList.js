@@ -33,6 +33,7 @@ class MemoList extends React.Component {
       <div>
           <ReactCSSTransitionGroup
                         transitionName="memo"
+                        transitionLeave={this.props.transitionLeave}
                         transitionEnterTimeout={2000}
                         transitionLeaveTimeout={1000}>
                             { mapToCompoents(this.props.memoInfos) }
@@ -51,7 +52,8 @@ MemoList.defaultProps = {
     memoInfos: [],
     memoUpdate: (memoId, content) => {
         console.log("memoUpdate function is Null");
-    }
+    },
+    transitionLeave: true
 };
 
 export default MemoList;

@@ -14,7 +14,8 @@ class Home extends React.Component {
 
 		this.state = {
 				isWattingForRequest: false,
-				count: 0
+				count: 0,
+				transitionLeave: true
 		};
 	}
 
@@ -58,7 +59,8 @@ class Home extends React.Component {
 					console.log("memo List result",this.props.memoList.length, this.state.count);
 					if (this.props.memoList.length > this.state.count) {
 							this.setState({
-									isWattingForRequest: false
+									isWattingForRequest: false,
+									transitionLeave: true
 							});
 					}
 		});
@@ -70,6 +72,9 @@ class Home extends React.Component {
                 if(this.props.postStatus.status === 'ADD_POST_SUCCESS') {
                     Materialize.toast('Success!', 2000);
 
+										this.setState({
+											transitionLeave: false
+										});
 										this.props.memoClear();
 										this.handleMemoListRequest();
                 } else {
@@ -86,7 +91,8 @@ class Home extends React.Component {
 														requestMemoList = {this.handleMemoListRequest}
 														isWattingForRequest = { this.state.isWattingForRequest }
 														memoUpdate = { this.handleMemoUpdate }
-														memoDelete = { this.handleDelete } />);
+														memoDelete = { this.handleDelete }
+														transitionLeave = {this.state.transitionLeave} />);
         return (
             <div className = "wrapper">
                 {this.props.isLoggedIn ? write : undefined}

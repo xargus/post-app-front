@@ -17,6 +17,9 @@ class Home extends React.Component {
 				count: 0,
 				transitionLeave: true
 		};
+
+		console.log("Home constructor");
+		this.props.memoClear();
 	}
 
 	handleDelete(memoId, index) {
@@ -55,7 +58,7 @@ class Home extends React.Component {
 		});
 
 		console.log("request memo List");
-		this.props.memoListPost(this.props.userId, this.props.accessToken, start, 10).then(() => {
+		this.props.memoListPost(this.props.userId, this.props.accessToken, start, 10, this.props.keyword).then(() => {
 					console.log("memo List result",this.props.memoList.length, this.state.count);
 					if (this.props.memoList.length > this.state.count) {
 							this.setState({
@@ -117,8 +120,8 @@ const mapDispatchToProps = (dispatch) => {
 		memoAddPost : (userId, accessToken, contents) => {
 			return dispatch(memoAddPostRequest(userId, accessToken, contents));
 		},
-		memoListPost : (userId, accessToken, start, limit) => {
-			return dispatch(memoListPostRequest(userId, accessToken, start, limit));
+		memoListPost : (userId, accessToken, start, limit, keyword) => {
+			return dispatch(memoListPostRequest(userId, accessToken, start, limit, keyword));
 		},
 		memoClear : () => {
 			return dispatch(memoClear());

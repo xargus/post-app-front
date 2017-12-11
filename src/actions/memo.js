@@ -100,17 +100,28 @@ export function memoAddPostRequest(userId, accessToken, contents) {
     };
 }
 
-export function memoListPostRequest(userId, accessToken, start, limit) {
+export function memoListPostRequest(userId, accessToken, start, limit, keyword) {
     return (dispatch) => {
         dispatch(memoListPost());
 
-        return $.post(MEMO_URL, {
-            action: 'SELECT',
-            start: start,
-            limit: limit,
-            userId: userId,
-            accessToken: accessToken
-        })
+        console.log("keyword", keyword);
+        const selectParm = {
+          action: 'SELECT',
+          start: start,
+          limit: limit,
+          userId: userId,
+          accessToken: accessToken
+        };
+        const searchParm = {
+          action: 'SEARCH',
+          start: start,
+          limit: limit,
+          userId: userId,
+          accessToken: accessToken,
+          content: keyword
+        };
+
+        return $.post(MEMO_URL, keyword === undefined ? selectParm : searchParm)
         .done((response) => {
             console.log("memo list api result", response);
             var jsonResult = JSON.parse(response);
@@ -139,7 +150,7 @@ export function memoListPost() {
     };
 }
 
-export function memoListPostSuccess(memoList) {
+export function memoListPostSuccess(memoList = []) {
     return {
         type: MEMO_LIST_POST_SUCCESS,
         memoList

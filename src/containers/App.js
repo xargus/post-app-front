@@ -42,7 +42,8 @@ class App extends React.Component {
         return (
             <div>
                 <Header isLoggedIn={this.props.status.isLoggedIn}
-                onLogout={this.handleLogout}/>
+                onLogout={this.handleLogout}
+								history = {this.props.history}/>
             </div>
         );
     }

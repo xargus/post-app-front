@@ -2,8 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Write, MemoList } from '../components';
 import {memoAddPostRequest, memoListPostRequest, memoClear, memoUpdateRequest, memoDeleteRequest} from '../actions/memo';
+import CircularProgress from 'material-ui/CircularProgress';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import PropTypes from 'prop-types';
 
 class Home extends React.Component {
+
+	getChildContext() {
+    return { muiTheme: getMuiTheme(baseTheme) };
+  }
 
 	constructor(props) {
 		super(props);
@@ -15,7 +23,8 @@ class Home extends React.Component {
 		this.state = {
 				isWattingForRequest: false,
 				count: 0,
-				transitionLeave: true
+				transitionLeave: true,
+				showProgress: false
 		};
 
 		console.log("Home constructor");
@@ -24,6 +33,10 @@ class Home extends React.Component {
 
 	handleDelete(memoId, index) {
 			this.props.memoDelete(this.props.userId, this.props.accessToken, memoId, index).then(() => {
+					this.setState({
+							showProgress: false
+					});
+
 					console.log("home delete result",this.props.memoList);
 					const Materialize = window.Materialize;
 					if (this.props.postStatus.status === 'DELETE_SUCCESS') {
@@ -32,10 +45,18 @@ class Home extends React.Component {
 							Materialize.toast('Memo Delete Fail...', 2000);
 					}
 			});
+
+			this.setState({
+					showProgress: true
+			});
 	}
 
 	handleMemoUpdate(memoId, content, index) {
 			this.props.memoUpdate(this.props.userId, this.props.accessToken, memoId, content, index).then(() => {
+						this.setState({
+								showProgress: false
+						});
+
 						console.log("home update result",this.props.memoList);
 						const Materialize = window.Materialize;
 						if (this.props.postStatus.status === 'UPDATE_SUCCESS') {
@@ -43,6 +64,10 @@ class Home extends React.Component {
 						} else {
 								Materialize.toast('Memo Update Fail...', 2000);
 						}
+			});
+
+			this.setState({
+					showProgress: true
 			});
 	}
 
@@ -59,6 +84,10 @@ class Home extends React.Component {
 
 		console.log("request memo List");
 		this.props.memoListPost(this.props.userId, this.props.accessToken, start, 10, this.props.keyword).then(() => {
+					this.setState({
+							showProgress: false
+					});
+
 					console.log("memo List result",this.props.memoList.length, this.state.count);
 					if (this.props.memoList.length > this.state.count) {
 							this.setState({
@@ -67,10 +96,18 @@ class Home extends React.Component {
 							});
 					}
 		});
+
+		this.setState({
+				showProgress: true
+		});
 	}
 
 	handleAddPost(contents) {
         return this.props.memoAddPost(this.props.userId, this.props.accessToken, contents).then(() => {
+							this.setState({
+									showProgress: false
+							});
+							
             	const Materialize = window.Materialize;
                 if(this.props.postStatus.status === 'ADD_POST_SUCCESS') {
                     Materialize.toast('Success!', 2000);
@@ -85,6 +122,10 @@ class Home extends React.Component {
                 }
             }
         );
+
+				this.setState({
+						showProgress: true
+				});
     }
 
     render() {
@@ -96,8 +137,16 @@ class Home extends React.Component {
 														memoUpdate = { this.handleMemoUpdate }
 														memoDelete = { this.handleDelete }
 														transitionLeave = {this.state.transitionLeave} />);
+				const progress = (
+					<div className = "progress-container">
+							<div className = "progress">
+								<CircularProgress size={80} thickness={5}/>
+							</div>
+					</div>
+				);
         return (
             <div className = "wrapper">
+								{this.state.showProgress ? progress : undefined}
                 {this.props.isLoggedIn ? write : undefined}
 								{this.props.isLoggedIn ? memoList : undefined}
             </div>
@@ -114,6 +163,10 @@ const mapStateToProps = (state) => {
 			memoList: state.memo.memoList
 	};
 }
+
+Home.childContextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+};
 
 const mapDispatchToProps = (dispatch) => {
 	return {

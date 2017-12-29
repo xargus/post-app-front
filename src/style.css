@@ -293,3 +293,24 @@ ul.search-results {
     -webkit-animation-name: search-leave;
     animation-name: search-leave;
 }
+
+.progress-container {
+  position: fixed;
+  overflow-y: none;
+  left: 0px;
+  top: 0px;
+  height:100%;
+  width:100%;
+  background-color: rgba(0, 0, 0, 0.70);
+  z-index: 99;
+}
+
+.progress-container .progress {
+  text-align: center;
+  top:50%;
+  position: fixed;
+  overflow-y: none;
+  height:100%;
+  width:100%;
+  background-color: rgba(0, 0, 0, 0);
+}

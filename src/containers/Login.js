@@ -34,8 +34,8 @@ class Login extends React.Component {
 				this.props.register(googleUser).then(() => {
 						const Materialize = window.Materialize;
 
-						console.log('handleLogin result', this.props.status);
-						if(this.props.status === 'REGISTER_SUCCESS') {
+						console.log('handleRegister result', this.props.status.status);
+						if(this.props.status.status === 'REGISTER_SUCCESS') {
 								this.handleLogin(googleUser);
 						} else {
 								Materialize.toast('register fail...', 2000);

@@ -19,10 +19,21 @@ import {
   REGISTER_URL
 } from './APIInfos';
 
-export function logoutRequest(auth) {
-    return (dispatch) => {
+import {AUTH_GOOGLE} from '../containers/Login';
 
-        return auth.signOut().then(dispatch(logout()));
+export function logoutRequest() {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            var authType = window.getCookie("authType")
+            console.log('componentDidMount() cookie authType', authType);
+
+            if (authType === AUTH_GOOGLE) {
+                window.gapi.auth2.getAuthInstance().signOut().then(() => {
+                    dispatch(logout());
+                    resolve(true);
+                });
+            }
+        });
     };
 }
 
@@ -32,37 +43,46 @@ export function logout() {
     };
 }
 
-export function getStatusRequest(auth) {
+export function getStatusRequest() {
     return (dispatch) => {
         dispatch(getStatus());
 
-        console.log("logged in : ", auth.isSignedIn.get());
-
         return new Promise((resolve, reject) => {
-            if (auth.isSignedIn.get()) {
-                console.log("currentUser : ", auth.currentUser.get().getBasicProfile().getName());
-                dispatch(getStatusSuccess(auth.currentUser.get().getBasicProfile().getName(), auth.currentUser.get().getBasicProfile().getId(), auth.currentUser.get().getAuthResponse().access_token));
-                resolve(true);
-            } else {
-                dispatch(getStatusFailure());
-                resolve(false);
-            }
+            var authType = window.getCookie("authType")
+    				console.log('componentDidMount() cookie authType', authType);
+
+    				if (authType === AUTH_GOOGLE) {
+    						if (window.gapi !== undefined) {
+    								window.triggerGoogleLoaded();
+    						}
+    						window.addEventListener('google-loaded', function(){
+                  var user = window.gapi.auth2.getAuthInstance().currentUser.get();
+                  if (user !== undefined && user.getBasicProfile() !== undefined) {
+                      console.log("currentUser : ", user);
+                      dispatch(getStatusSuccess(user.getBasicProfile().getName(), user.getBasicProfile().getId(), user.getAuthResponse().access_token, authType));
+                      resolve(true);
+                  } else {
+                      dispatch(getStatusFailure());
+                      resolve(false);
+                  }
+                });
+    				}
         });
     };
 }
 
-export function loginRequest(googleUser) {
+export function loginRequest(userId, userName, accessToken, authType) {
     return (dispatch) => {
-        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+        console.log('Logged in as: ' + userName);
 
         dispatch(login());
 
-        console.log("login request", googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token);
+        console.log("login request", userId, authType);
 
         return $.post(LOGIN_URL, {
-            userId: googleUser.getBasicProfile().getId(),
-            oauthPlatform: 'google',
-            accessToken: googleUser.getAuthResponse().access_token
+            userId: userId,
+            oauthPlatform: authType,
+            accessToken: accessToken
         })
         .done((response) => {
             var jsonResult = JSON.parse(response);
@@ -70,7 +90,7 @@ export function loginRequest(googleUser) {
             if (jsonResult.result === 'NOT_REGISTERED_USER') {
               dispatch(unregisterUser());
             } else {
-              dispatch(loginSuccess(googleUser.getBasicProfile().getName(), googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token));
+              dispatch(loginSuccess(userName, userId, accessToken, authType));
             }
         }).catch((error) => {
             console.log("login fail", error);
@@ -114,12 +134,13 @@ export function getStatus() {
     };
 }
 
-export function getStatusSuccess(userName, userId, accessToken) {
+export function getStatusSuccess(userName, userId, accessToken, authType) {
     return {
         type: AUTH_GET_STATUS_SUCCESS,
         userName,
         userId,
-        accessToken
+        accessToken,
+        authType
     };
 }
 
@@ -160,12 +181,13 @@ export function login() {
     };
 }
 
-export function loginSuccess(userName, userId, accessToken) {
+export function loginSuccess(userName, userId, accessToken, authType) {
     return {
         type: AUTH_LOGIN_SUCCESS,
         userName,
         userId,
-        accessToken
+        accessToken,
+        authType
     };
 }
 

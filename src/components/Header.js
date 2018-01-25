@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Search } from '../components';
+import { Search, Login } from '../components';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Header extends React.Component {
@@ -9,17 +9,32 @@ class Header extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showSearch : false
+            showSearch : false,
+            showLogin : false
         };
 
         this.handleSearchClick = this.handleSearchClick.bind(this);
         this.handleSearchClose = this.handleSearchClose.bind(this);
+        this.handleLoginClick = this.handleLoginClick.bind(this);
+        this.handleLoginClose = this.handleLoginClose.bind(this);
     }
 
     handleSearchClick() {
         this.setState({
             showSearch : !this.state.showSearch
         });
+    }
+
+    handleLoginClose() {
+        this.setState({
+            showLogin : false
+        });
+    }
+
+    handleLoginClick() {
+      this.setState({
+          showLogin : true
+      });
     }
 
     handleSearchClose() {
@@ -32,9 +47,7 @@ class Header extends React.Component {
 
     	const loginButton = (
             <li>
-                <Link to = "/login">
-                    <i className="material-icons">vpn_key</i>
-                </Link>
+                <a onClick = {this.handleLoginClick} ><i className="material-icons">vpn_key</i></a>
             </li>
         );
 
@@ -66,6 +79,10 @@ class Header extends React.Component {
 
                 <ReactCSSTransitionGroup transitionName="search" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                         { this.state.showSearch ? <Search history = {this.props.history} onClose = {this.handleSearchClose} /> : undefined}
+                </ReactCSSTransitionGroup>
+
+                <ReactCSSTransitionGroup transitionName="search" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                { this.state.showLogin ? <Login history = {this.props.history} onClose = {this.handleLoginClose}/> : undefined }
                 </ReactCSSTransitionGroup>
             </div>
         );

@@ -8,35 +8,28 @@ class App extends React.Component {
 	constructor(props) {
         super(props);
         this.handleLogout = this.handleLogout.bind(this);
-				this.handleGoogleLoaded = this.handleGoogleLoaded.bind(this);
   }
 
   handleLogout() {
-        this.props.logout(window.gapi.auth2.getAuthInstance()).then(
-            () => {
+        this.props.logout().then(
+            (result) => {
             	const Materialize = window.Materialize;
                 Materialize.toast('Good Bye!', 2000);
+								this.props.history.replace('/');
             }
         );
   }
 
-	handleGoogleLoaded() {
-			console.log('handleGoogleLoaded()');
-			this.props.getStatus(window.gapi.auth2.getAuthInstance()).then((result) => {
-					console.log("get status", result);
-					// this.props.history.push('/');
-			});
-	}
-
 	componentDidMount() {
-				console.log('componentDidMount()');
-				if (window.gapi !== undefined) {
-            window.triggerGoogleLoaded();
-        }
-
-        window.addEventListener('google-loaded', this.handleGoogleLoaded);
-    }
-
+			this.props.getLoginStatus().then((result) => {
+					if (result === true) {
+						console.log("login success");
+					} else {
+						console.log("login fail");
+						this.handleLogout();
+					}
+			});
+  }
 
     render() {
         return (
@@ -57,8 +50,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getStatus: (auth) => {
-            return dispatch(getStatusRequest(auth));
+        getLoginStatus: () => {
+            return dispatch(getStatusRequest());
         },
         logout: (auth) => {
             return dispatch(logoutRequest(auth));

@@ -21,14 +21,19 @@ class Home extends React.Component {
 		this.handleDelete = this.handleDelete.bind(this);
 
 		this.state = {
+				initCompleted: false,
 				isWattingForRequest: false,
 				count: 0,
 				transitionLeave: true,
 				showProgress: false
 		};
 
-		console.log("Home constructor");
-		this.props.memoClear();
+		this.props.memoClear().then((result) => {
+				this.setState({
+					initCompleted: true
+				});
+		});
+		console.log("Home constructor", this.props.memoList);
 	}
 
 	handleDelete(memoId, index) {
@@ -103,11 +108,15 @@ class Home extends React.Component {
 	}
 
 	handleAddPost(contents) {
+				this.setState({
+						showProgress: true
+				});
+
         return this.props.memoAddPost(this.props.userId, this.props.accessToken, contents).then(() => {
 							this.setState({
 									showProgress: false
 							});
-							
+
             	const Materialize = window.Materialize;
                 if(this.props.postStatus.status === 'ADD_POST_SUCCESS') {
                     Materialize.toast('Success!', 2000);
@@ -122,10 +131,6 @@ class Home extends React.Component {
                 }
             }
         );
-
-				this.setState({
-						showProgress: true
-				});
     }
 
     render() {
@@ -147,8 +152,8 @@ class Home extends React.Component {
         return (
             <div className = "wrapper">
 								{this.state.showProgress ? progress : undefined}
-                {this.props.isLoggedIn ? write : undefined}
-								{this.props.isLoggedIn ? memoList : undefined}
+                {this.props.isLoggedIn && this.state.initCompleted ? write : undefined}
+								{this.props.isLoggedIn && this.state.initCompleted ? memoList : undefined}
             </div>
         );
     }

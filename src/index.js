@@ -20,7 +20,7 @@ ReactDOM.render(
 				<Route component = {App} />
     		<Route exact path="/" component={Home}/>
         <Route path="/home" component={Home}/>
-        <Route path="/login" component={Login}/>
+        <Route path="/login/:authType" component={Login}/>
 				<Route path="/wall/:search_keyword" component={Wall}/>
 			</div>
   		</Router>

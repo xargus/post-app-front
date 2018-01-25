@@ -6,13 +6,13 @@ body {
 
 /* Authentication */
 .auth {
-  /*padding: 0px 50px 0px 50px;*/
-  /*transform: translate(10%, 0%);*/
-  position: absolute;
-  left: 15%;
-  width: 70%;
-  margin-top: 50px;
+  width: 280px;
   text-align: center;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  top: 20%;
 }
 
 .logo {
@@ -40,26 +40,9 @@ body {
     font-size: 18px;
 }
 
-.auth .row {
-    margin-bottom: 0px;
-}
-
-.auth .username {
-  margin-top: 0px;
-}
-
-.auth .btn {
-    width: 90%;
-}
-
-.auth .footer {
-    border-top: 1px solid #E9E9E9;
-    padding-bottom: 21px;
-}
-
-.auth .loginButton {
-    padding-bottom: 10px;
-    width: 90%;
+.login-container .closeBtn {
+    margin-top: 20px;
+    margin-right: 20px;
 }
 
 /* WRITE */
@@ -313,4 +296,15 @@ ul.search-results {
   height:100%;
   width:100%;
   background-color: rgba(0, 0, 0, 0);
+}
+
+.login-container {
+  position: fixed;
+  overflow-y: none;
+  left: 0px;
+  top: 0px;
+  height:100%;
+  width:100%;
+  background-color: rgba(0, 0, 0, 0.70);
+  z-index: 99;
 }

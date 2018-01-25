@@ -2,6 +2,11 @@ import React from 'react';
 import { Home } from '../containers';
 
 class Wall extends React.Component {
+    constructor(props) {
+        super(props);
+
+        console.log("search keyword : " + this.props.match.params.search_keyword);
+    }
     render() {
         return(
           <div>

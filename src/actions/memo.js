@@ -72,7 +72,10 @@ export function memoUpdateRequest(userId, accessToken, memoId, content, index) {
 
 export function memoClear() {
     return (dispatch) => {
-      dispatch(memoClearReturn());
+        return new Promise((resolve, reject) => {
+          dispatch(memoClearReturn());
+          resolve(true);
+        });
     }
 }
 
@@ -104,7 +107,7 @@ export function memoListPostRequest(userId, accessToken, start, limit, keyword) 
     return (dispatch) => {
         dispatch(memoListPost());
 
-        console.log("keyword", keyword);
+        console.log("request memo", userId, start, limit, keyword);
         const selectParm = {
           action: 'SELECT',
           start: start,

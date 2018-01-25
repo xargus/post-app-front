@@ -1,29 +1,50 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { loginRequest, registerRequest, logoutRequest } from '../actions/authentication';
+import CircularProgress from 'material-ui/CircularProgress';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import PropTypes from 'prop-types';
+
+export const AUTH_GOOGLE = "google";
 
 class Login extends React.Component {
+	getChildContext() {
+    return { muiTheme: getMuiTheme(baseTheme) };
+  }
+
 	constructor(props) {
         super(props);
+
+				console.log("Login action : " + window.gapi.auth2.getAuthInstance().currentUser.get());
 
         this.handleLogin = this.handleLogin.bind(this);
 				this.handleRegister = this.handleRegister.bind(this);
 				this.handleLogout = this.handleLogout.bind(this);
+
+				if (this.props.match.params.authType === AUTH_GOOGLE) {
+						this.handleLogin(window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getId(),
+															window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getName(),
+															window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token,
+															AUTH_GOOGLE);
+				}
     }
 
-    handleLogin(googleUser) {
-        this.props.login(googleUser).then(() => {
+    handleLogin(userId, userName, accessToken, authType) {
+        this.props.login(userId, userName, accessToken, authType).then(() => {
             const Materialize = window.Materialize;
 
 						console.log('handleLogin result', this.props.userInfo, this.props.status);
             if(this.props.status.status === 'LOGIN_SUCCESS') {
                 Materialize.toast('Welcome, ' + this.props.userInfo.userName, 2000);
-                this.props.history.push('/');
+								document.cookie = "authType="+authType;
+                this.props.history.replace('/');
             } else if (this.props.status.status === 'UNREGISTERED_USER') {
 								this.handleRegister();
 						} else {
                 Materialize.toast('login fail...', 2000);
 								this.handleLogout();
+								this.props.history.replace('/');
             }
         });
     }
@@ -45,60 +66,25 @@ class Login extends React.Component {
 		}
 
 		handleLogout() {
-				this.props.logout(window.gapi.auth2.getAuthInstance());
+				this.props.logout().then((result) => {
+						document.cookie = "authType=;";
+				});
 		}
-
-    componentDidMount() {
-        console.log('componentDidMount');
-        var loginHandler = this.handleLogin;
-
-        if (window.gapi !== undefined) {
-            window.triggerGoogleLoaded();
-        }
-
-        window.addEventListener('google-loaded', handleGoogleLoaded);
-
-        function handleGoogleLoaded() {
-            console.log('handleGoogleLoaded()');
-            window.gapi.signin2.render('signin', {
-                'scope': 'profile email',
-                'width': 'standard',
-                'height': 50,
-                'longtitle': true,
-                'theme': 'dark',
-                'onsuccess': onSuccess,
-                'onfailure': onFailure
-            });
-        }
-
-        function onSuccess(googleUser) {
-            loginHandler(googleUser);
-        }
-
-        function onFailure(error) {
-            const Materialize = window.Materialize;
-            Materialize.toast('login fail...', 2000);
-
-            console.log(error);
-        }
-    }
 
     render() {
         return (
-            <div className="auth">
-                <div className="card">
-                    <div className="header blue white-text center">
-                            <div className="card-content">LOGIN</div>
-                    </div>
-
-                    <div className="card-content">
-                        <div id="signin"></div>
-                    </div>
-                </div>
-            </div>
+					<div className = "progress-container">
+							<div className = "progress">
+								<CircularProgress size={80} thickness={5}/>
+							</div>
+					</div>
         );
     }
 }
+
+Login.childContextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => {
     return {
@@ -109,14 +95,14 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (googleUser) => {
-            return dispatch(loginRequest(googleUser));
+        login: (userId, userName, accessToken, authType) => {
+            return dispatch(loginRequest(userId, userName, accessToken, authType));
         },
 				register: (googleUser) => {
 						return dispatch(registerRequest(googleUser));
 				},
-				logout: (auth) => {
-            return dispatch(logoutRequest(auth));
+				logout: () => {
+            return dispatch(logoutRequest());
         }
     };
 };

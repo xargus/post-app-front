@@ -10,7 +10,8 @@ const initialState = {
     userInfo: {
       userName: '',
       userId: '',
-      accessToken: ''
+      accessToken: '',
+      authType: '',
     }
 };
 
@@ -30,7 +31,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''}
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
                 }
             });
         case types.AUTH_LOGIN_SUCCESS:
@@ -43,7 +45,8 @@ export default function authentication(state, action) {
                 userInfo: {
                     userName: { $set : action.userName },
                     userId: { $set : action.userId },
-                    accessToken: { $set : action.accessToken }
+                    accessToken: { $set : action.accessToken },
+                    authType: { $set : action.authType}
                 }
             });
         case types.AUTH_LOGIN_FAILURE:
@@ -56,7 +59,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''}
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
                 }
             });
         case types.AUTH_UNREGISTERED_USER:
@@ -69,7 +73,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''}
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
                 }
             });
 
@@ -83,7 +88,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''}
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
                 }
             });
         case types.AUTH_REGISTER_SUCCESS:
@@ -96,7 +102,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''}
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
                 }
             });
         case types.AUTH_REGISTER_FAILURE:
@@ -109,7 +116,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''}
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
                 }
             });
 
@@ -123,7 +131,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''}
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
                 }
             });
         case types.AUTH_GET_STATUS_SUCCESS:
@@ -136,7 +145,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : action.userName },
                   userId: { $set : action.userId },
-                  accessToken: { $set : action.accessToken }
+                  accessToken: { $set : action.accessToken },
+                  authType: { $set: action.authType}
                 }
             });
         case types.AUTH_GET_STATUS_FAILURE:
@@ -149,7 +159,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''}
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
                 }
             });
 
@@ -165,7 +176,8 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''}
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
                 }
             });
 

@@ -40,7 +40,7 @@ class Login extends React.Component {
 								document.cookie = "authType="+authType;
                 this.props.history.replace('/');
             } else if (this.props.status.status === 'UNREGISTERED_USER') {
-								this.handleRegister();
+								this.handleRegister(userId, userName, accessToken, authType);
 						} else {
                 Materialize.toast('login fail...', 2000);
 								this.handleLogout();
@@ -49,15 +49,14 @@ class Login extends React.Component {
         });
     }
 
-		handleRegister() {
+		handleRegister(userId, userName, accessToken, authType) {
 				console.log('handle register');
-				var googleUser = window.gapi.auth2.getAuthInstance().currentUser.get();
-				this.props.register(googleUser).then(() => {
+				this.props.register(userId, accessToken, authType).then(() => {
 						const Materialize = window.Materialize;
 
 						console.log('handleRegister result', this.props.status.status);
 						if(this.props.status.status === 'REGISTER_SUCCESS') {
-								this.handleLogin(googleUser);
+								this.handleLogin(userId, userName, accessToken, authType);
 						} else {
 								Materialize.toast('register fail...', 2000);
 								this.handleLogout();
@@ -98,8 +97,8 @@ const mapDispatchToProps = (dispatch) => {
         login: (userId, userName, accessToken, authType) => {
             return dispatch(loginRequest(userId, userName, accessToken, authType));
         },
-				register: (googleUser) => {
-						return dispatch(registerRequest(googleUser));
+				register: (userId, accessToken, authType) => {
+						return dispatch(registerRequest(userId, accessToken, authType));
 				},
 				logout: () => {
             return dispatch(logoutRequest());

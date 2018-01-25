@@ -99,18 +99,16 @@ export function loginRequest(userId, userName, accessToken, authType) {
     };
 }
 
-export function registerRequest(googleUser) {
+export function registerRequest(userId, accessToken, authType) {
     return (dispatch) => {
-        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-
         dispatch(register());
 
-        console.log("register request", googleUser.getBasicProfile().getId(), googleUser.getAuthResponse().access_token);
+        console.log("register request", userId, authType);
 
         return $.post(REGISTER_URL, {
-            userId: googleUser.getBasicProfile().getId(),
-            oauthPlatform: 'google',
-            accessToken: googleUser.getAuthResponse().access_token
+            userId: userId,
+            oauthPlatform: authType,
+            accessToken: accessToken
         })
         .done((response) => {
             var jsonResult = JSON.parse(response);

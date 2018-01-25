@@ -27,13 +27,15 @@ class Home extends React.Component {
 				transitionLeave: true,
 				showProgress: false
 		};
+	}
 
+	componentDidMount(){
 		this.props.memoClear().then((result) => {
 				this.setState({
 					initCompleted: true
 				});
 		});
-		console.log("Home constructor", this.props.memoList);
+		console.log("Home componentDidMount", this.props.memoList);
 	}
 
 	handleDelete(memoId, index) {

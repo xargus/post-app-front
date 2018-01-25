@@ -21,6 +21,9 @@ class App extends React.Component {
   }
 
 	componentDidMount() {
+			//google button 이용시 Missing required parameter 'client_id'가 발생하여 최초 로드시 init 무조건 하도록 수정.
+			window.triggerGoogleLoaded();
+
 			this.props.getLoginStatus().then((result) => {
 					if (result === true) {
 						console.log("login success");

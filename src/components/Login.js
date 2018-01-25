@@ -31,7 +31,6 @@ class Login extends React.Component {
   }
 
   handleGoogleLogin(googleUser) {
-      console.log("handleGoogleLogin");
       this.handleLogin(AUTH_GOOGLE);
   }
 
@@ -51,27 +50,15 @@ class Login extends React.Component {
   }
 
   googleLoginInit() {
-    var handleLogin = this.handleGoogleLogin;
-    var handleLoginFail = this.handleGoogleLoginFail;
-    
-    if (window.gapi === undefined) {
-        window.triggerGoogleLoaded();
-        window.addEventListener('google-loaded', initGoogleButton);
-    } else {
-        initGoogleButton();
-    }
-
-    function initGoogleButton() {
-      window.gapi.signin2.render('signin', {
-          'scope': 'profile email',
-          'width': 'standard',
-          'height': 50,
-          'longtitle': true,
-          'theme': 'dark',
-          'onsuccess': handleLogin,
-          'onfailure': handleLoginFail
-      });
-    }
+    window.gapi.signin2.render('signin', {
+        'scope': 'profile email',
+        'width': 'standard',
+        'height': 50,
+        'longtitle': true,
+        'theme': 'dark',
+        'onsuccess': this.handleGoogleLogin,
+        'onfailure': this.handleGoogleLoginFail
+    });
   }
 
   naverLoginInit() {
@@ -106,6 +93,7 @@ class Login extends React.Component {
                     <div className="card-content">
                         <div id="signin"></div>
                     </div>
+
                     <div className="card-content">
                         <div id="naverIdLogin"></div>
                     </div>

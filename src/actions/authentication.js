@@ -52,7 +52,7 @@ export function getStatusRequest() {
     				console.log('componentDidMount() cookie authType', authType);
 
     				if (authType === AUTH_GOOGLE) {
-    						if (window.gapi !== undefined) {
+    						if (window.gapi === undefined) {
     								window.triggerGoogleLoaded();
     						}
     						window.addEventListener('google-loaded', function(){

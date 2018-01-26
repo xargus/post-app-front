@@ -64,7 +64,7 @@ class Login extends React.Component {
   naverLoginInit() {
     var naverLogin = new window.naver.LoginWithNaverId({
         clientId: "18F1ahzVnczJShlz01UB",
-        callbackUrl: "http://localhost:3000/login?action=success&authType=naver",
+        callbackUrl: "https://post.xargus.center/login?action=success&authType=naver",
         isPopup: false,
         loginButton: {color: "green", type: 3, height: 53}
       }

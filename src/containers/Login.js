@@ -7,6 +7,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import PropTypes from 'prop-types';
 
 export const AUTH_GOOGLE = "google";
+export const AUTH_NAVER = "naver";
 
 class Login extends React.Component {
 	getChildContext() {
@@ -16,31 +17,50 @@ class Login extends React.Component {
 	constructor(props) {
         super(props);
 
-				console.log("Login action : " + window.gapi.auth2.getAuthInstance().currentUser.get());
-
         this.handleLogin = this.handleLogin.bind(this);
 				this.handleRegister = this.handleRegister.bind(this);
 				this.handleLogout = this.handleLogout.bind(this);
-
-				if (this.props.match.params.authType === AUTH_GOOGLE) {
-						this.handleLogin(window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getId(),
-															window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getName(),
-															window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token,
-															AUTH_GOOGLE);
-				}
     }
 
-    handleLogin(userId, userName, accessToken, authType) {
-        this.props.login(userId, userName, accessToken, authType).then(() => {
+		componentDidMount(){
+			var params = new URLSearchParams(this.props.location.search);
+			var authType = params.get("authType");
+			var action = params.get("action");
+
+			console.log("authType, action", authType, action);
+
+			if (action === undefined || action === "fail") {
+				this.handleLogout();
+				return;
+			}
+
+			if (authType === AUTH_NAVER) {
+					var login = this;
+					window.naverLogin.getLoginStatus(function (status) {
+						if (status) {
+							if (status === true) {
+									console.log("login Naver!!");
+									login.handleLogin(AUTH_NAVER)
+							} else {
+									login.handleLogout();
+							}
+						}
+					});
+			} else {
+				 this.handleLogin(authType);
+			}
+		}
+
+    handleLogin(authType) {
+        this.props.login(authType).then(() => {
             const Materialize = window.Materialize;
 
 						console.log('handleLogin result', this.props.userInfo, this.props.status);
             if(this.props.status.status === 'LOGIN_SUCCESS') {
                 Materialize.toast('Welcome, ' + this.props.userInfo.userName, 2000);
-								document.cookie = "authType="+authType;
                 this.props.history.replace('/');
             } else if (this.props.status.status === 'UNREGISTERED_USER') {
-								this.handleRegister(userId, userName, accessToken, authType);
+								this.handleRegister(authType);
 						} else {
                 Materialize.toast('login fail...', 2000);
 								this.handleLogout();
@@ -66,7 +86,7 @@ class Login extends React.Component {
 
 		handleLogout() {
 				this.props.logout().then((result) => {
-						document.cookie = "authType=;";
+
 				});
 		}
 
@@ -94,11 +114,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (userId, userName, accessToken, authType) => {
-            return dispatch(loginRequest(userId, userName, accessToken, authType));
+        login: (authType) => {
+            return dispatch(loginRequest(authType));
         },
-				register: (userId, accessToken, authType) => {
-						return dispatch(registerRequest(userId, accessToken, authType));
+				register: (authType) => {
+						return dispatch(registerRequest(authType));
 				},
 				logout: () => {
             return dispatch(logoutRequest());

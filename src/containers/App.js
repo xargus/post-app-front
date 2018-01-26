@@ -16,18 +16,16 @@ class App extends React.Component {
             	const Materialize = window.Materialize;
                 Materialize.toast('Good Bye!', 2000);
 								this.props.history.replace('/');
+								document.cookie = "authType=;";
             }
         );
   }
 
 	componentDidMount() {
-			//google button 이용시 Missing required parameter 'client_id'가 발생하여 최초 로드시 init 무조건 하도록 수정.
-			window.triggerGoogleLoaded();
-
 			this.props.getLoginStatus().then((result) => {
 					if (result === true) {
 						console.log("login success");
-					} else {
+					} else if (result === false && this.props.status.status !== 'STATUS_NONE'){
 						console.log("login fail");
 						this.handleLogout();
 					}

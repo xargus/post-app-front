@@ -121,6 +121,20 @@ export default function authentication(state, action) {
                 }
             });
 
+        case types.AUTH_GET_STATUS_NONE:
+            return update(state, {
+                status: {
+                    status: { $set: 'STATUS_NONE'},
+                    isLoggedIn: { $set: false },
+                    error: { $set: '' }
+                },
+                userInfo: {
+                  userName: { $set : ''},
+                  userId: { $set : ''},
+                  accessToken: { $set : ''},
+                  authType: { $set: ''}
+                }
+            });
         case types.AUTH_GET_STATUS:
             return update(state, {
                 status: {

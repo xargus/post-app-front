@@ -17,7 +17,7 @@
    <body>
       <div id="root"></div>
       <!-- Google Oauth -->
-      <script src="https://apis.google.com/js/platform.js?onload=triggerGoogleLoaded" async defer></script>
+      <script src="https://apis.google.com/js/platform.js?onload=initGoogleLogin" async defer></script>
       <!-- Naver Oauth -->
       <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js" charset="utf-8"></script>
       <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -27,7 +27,15 @@
       <script src="/bundle.js"></script>
 
       <script type="text/javascript">
-        function triggerGoogleLoaded() {
+        var naverLogin = new window.naver.LoginWithNaverId({
+            clientId: "18F1ahzVnczJShlz01UB",
+            callbackUrl: "http://localhost:3000/login?action=success&authType=naver",
+            isPopup: false
+          }
+        );
+        naverLogin.init();
+
+        function initGoogleLogin() {
             console.log('triggerGoogleLoaded()');
             window.gapi.load('auth2', () => {
                 // Retrieve the singleton for the GoogleAuth library and set up the client.

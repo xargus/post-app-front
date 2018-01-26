@@ -1,5 +1,5 @@
 import React from 'react';
-import {AUTH_GOOGLE} from '../containers/Login';
+import { AUTH_GOOGLE } from '../containers/Login';
 
 class Login extends React.Component {
 
@@ -40,7 +40,7 @@ class Login extends React.Component {
   }
 
   handleLogin(authType) {
-    this.props.history.push("/login/" + authType);
+    this.props.history.push("/login?authType=" + authType + "&action=success");
     this.handleClose();
   }
 
@@ -64,7 +64,7 @@ class Login extends React.Component {
   naverLoginInit() {
     var naverLogin = new window.naver.LoginWithNaverId({
         clientId: "18F1ahzVnczJShlz01UB",
-        callbackUrl: "http://localhost:3000/",
+        callbackUrl: "http://localhost:3000/login?action=success&authType=naver",
         isPopup: false,
         loginButton: {color: "green", type: 3, height: 53}
       }

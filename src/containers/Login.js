@@ -6,8 +6,6 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import PropTypes from 'prop-types';
 
-export const AUTH_GOOGLE = "google";
-export const AUTH_NAVER = "naver";
 
 class Login extends React.Component {
 	getChildContext() {
@@ -29,18 +27,19 @@ class Login extends React.Component {
 
 			console.log("authType, action", authType, action);
 
-			if (action === undefined || action === "fail") {
+			if (authType === undefined || authType === "undefined"
+							|| action === undefined || action === "undefined" || action === "fail") {
 				this.handleLogout();
 				return;
 			}
 
-			if (authType === AUTH_NAVER) {
+			if (authType === window.AUTH_NAVER) {
 					var login = this;
 					window.naverLogin.getLoginStatus(function (status) {
 						if (status) {
 							if (status === true) {
 									console.log("login Naver!!");
-									login.handleLogin(AUTH_NAVER)
+									login.handleLogin(window.AUTH_NAVER)
 							} else {
 									login.handleLogout();
 							}
@@ -69,14 +68,14 @@ class Login extends React.Component {
         });
     }
 
-		handleRegister(userId, userName, accessToken, authType) {
+		handleRegister(authType) {
 				console.log('handle register');
-				this.props.register(userId, accessToken, authType).then(() => {
+				this.props.register(authType).then(() => {
 						const Materialize = window.Materialize;
 
 						console.log('handleRegister result', this.props.status.status);
 						if(this.props.status.status === 'REGISTER_SUCCESS') {
-								this.handleLogin(userId, userName, accessToken, authType);
+								this.handleLogin(authType);
 						} else {
 								Materialize.toast('register fail...', 2000);
 								this.handleLogout();

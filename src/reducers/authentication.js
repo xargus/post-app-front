@@ -10,7 +10,6 @@ const initialState = {
     userInfo: {
       userName: '',
       userId: '',
-      accessToken: '',
       authType: '',
     }
 };
@@ -31,7 +30,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });
@@ -45,7 +43,6 @@ export default function authentication(state, action) {
                 userInfo: {
                     userName: { $set : action.userName },
                     userId: { $set : action.userId },
-                    accessToken: { $set : action.accessToken },
                     authType: { $set : action.authType}
                 }
             });
@@ -59,7 +56,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });
@@ -73,7 +69,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });
@@ -88,7 +83,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });
@@ -102,7 +96,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });
@@ -116,7 +109,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });
@@ -131,7 +123,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });
@@ -145,7 +136,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });
@@ -159,7 +149,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : action.userName },
                   userId: { $set : action.userId },
-                  accessToken: { $set : action.accessToken },
                   authType: { $set: action.authType}
                 }
             });
@@ -173,7 +162,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });
@@ -190,7 +178,6 @@ export default function authentication(state, action) {
                 userInfo: {
                   userName: { $set : ''},
                   userId: { $set : ''},
-                  accessToken: { $set : ''},
                   authType: { $set: ''}
                 }
             });

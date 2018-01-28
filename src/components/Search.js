@@ -1,11 +1,11 @@
 import React from 'react';
+import $ from 'jquery';
 
 class Search extends React.Component {
   constructor(props) {
       super(props);
       this.handleClose = this.handleClose.bind(this);
       this.handleChange = this.handleChange.bind(this);
-      this.handleKeyDown = this.handleKeyDown.bind(this);
 
       this.state = {
           keyword : ''
@@ -20,6 +20,17 @@ class Search extends React.Component {
        document.onkeydown = listenEscKey;
   }
 
+  componentDidMount() {
+    var search = this;
+    $('input').keydown( function(e) {
+       var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+       if(key === 13) {
+         search.props.history.push("/wall/" + search.state.keyword);
+         search.handleClose();
+       }
+   });
+  }
+
   handleClose() {
       document.onkeydown = null;
       this.props.onClose();
@@ -31,13 +42,6 @@ class Search extends React.Component {
       });
   }
 
-  handleKeyDown(e) {
-      if (e.keyCode === 13) {
-          this.props.history.push("/wall/" + this.state.keyword);
-          this.handleClose();
-      }
-  }
-
   render() {
       return(
         <div className = "search-screen white-text">
@@ -45,9 +49,9 @@ class Search extends React.Component {
                 <a className = "waves-effect waves-light btn red lighten-1" onClick = {this.handleClose}>CLOSE</a>
             </div>
             <div className = "container">
-                <input value = {this.state.keyword}
-                        onChange = {this.handleChange}
-                        onKeyDown = {this.handleKeyDown}>
+                <input className = "input"
+                        value = {this.state.keyword}
+                        onChange = {this.handleChange}>
                 </input>
             </div>
         </div>

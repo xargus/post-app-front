@@ -308,3 +308,9 @@ ul.search-results {
   background-color: rgba(0, 0, 0, 0.70);
   z-index: 99;
 }
+
+.floating-button {
+  position: fixed;
+  top: 85%;
+  left: 85%;
+}

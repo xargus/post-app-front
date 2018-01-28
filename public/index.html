@@ -27,9 +27,16 @@
       <script src="/bundle.js"></script>
 
       <script type="text/javascript">
+        var AUTH_GOOGLE = "google";
+        var AUTH_NAVER = "naver";
+        var API_HOST = "https://post.xargus.center/";
+        var HOST = "https://post.xargus.center/";
+        var API_HOST_DEV = "http://localhost:8080/";
+        var HOST_DEV = "http://localhost:3000/";
+
         var naverLogin = new window.naver.LoginWithNaverId({
             clientId: "18F1ahzVnczJShlz01UB",
-            callbackUrl: "https://post.xargus.center/login?action=success&authType=naver",
+            callbackUrl: HOST + "login?action=success&authType=naver",
             isPopup: false
           }
         );

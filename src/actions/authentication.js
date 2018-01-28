@@ -20,8 +20,6 @@ import {
   REGISTER_URL
 } from './APIInfos';
 
-import {AUTH_GOOGLE, AUTH_NAVER} from '../containers/Login';
-
 
 function AuthModel(userId, userName, accessToken, authType) {
     this.userId = userId;
@@ -32,12 +30,12 @@ function AuthModel(userId, userName, accessToken, authType) {
 
 function getAuthModel(authType) {
     var model;
-    if (authType === AUTH_GOOGLE) {
+    if (authType === window.AUTH_GOOGLE) {
         model = new AuthModel(window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getId(),
                               window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getName(),
                               window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token,
                               authType);
-    } else if (authType === AUTH_NAVER) {
+    } else if (authType === window.AUTH_NAVER) {
         model = new AuthModel(window.naverLogin.user.getId(),
                           window.naverLogin.user.getName(),
                           window.naverLogin.accessToken.accessToken,
@@ -47,19 +45,28 @@ function getAuthModel(authType) {
     return model;
 }
 
+export function getAccessToken() {
+    var authType = window.getCookie('authType');
+    if (authType === window.AUTH_GOOGLE) {
+        return window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
+    } else if (authType === window.AUTH_NAVER) {
+        return window.naverLogin.accessToken.accessToken;
+    }
+}
+
 export function logoutRequest() {
     return (dispatch) => {
         return new Promise((resolve, reject) => {
             var authType = window.getCookie("authType")
             console.log('componentDidMount() cookie authType', authType);
 
-            if (authType === AUTH_GOOGLE) {
+            if (authType === window.AUTH_GOOGLE) {
                 window.gapi.auth2.getAuthInstance().signOut().then(() => {
                     document.cookie = "authType=;";
                     dispatch(logout());
                     resolve(true);
                 });
-            } else if (authType === AUTH_NAVER) {
+            } else if (authType === window.AUTH_NAVER) {
                 window.naverLogin.logout();
                 dispatch(logout());
                 resolve(true);
@@ -85,7 +92,7 @@ export function getStatusRequest() {
             var authType = window.getCookie("authType")
     				console.log('getStatusRequest() cookie authType', authType);
 
-    				if (authType === AUTH_GOOGLE) {
+    				if (authType === window.AUTH_GOOGLE) {
     						window.addEventListener('google-loaded', function(){
                   var model = getAuthModel(authType);
                   if (model === undefined) {
@@ -94,10 +101,10 @@ export function getStatusRequest() {
                       return;
                   }
 
-                  dispatch(getStatusSuccess(model.userName, model.userId, model.accessToken, authType));
+                  dispatch(getStatusSuccess(model.userName, model.userId, authType));
                   resolve(true);
                 });
-    				} else if (authType === AUTH_NAVER) {
+    				} else if (authType === window.AUTH_NAVER) {
               window.addEventListener('load', function () {
                   window.naverLogin.getLoginStatus(function (status) {
                     if (status) {
@@ -109,7 +116,7 @@ export function getStatusRequest() {
                       }
 
                       console.log("naver getStatus login!!", model.userName);
-                      dispatch(getStatusSuccess(model.userName, model.userId, model.accessToken, authType));
+                      dispatch(getStatusSuccess(model.userName, model.userId, authType));
                       resolve(true);
                     } else {
                       dispatch(getStatusFailure());
@@ -149,7 +156,7 @@ export function loginRequest(authType) {
             if (jsonResult.result === 'NOT_REGISTERED_USER') {
               dispatch(unregisterUser());
             } else {
-              dispatch(loginSuccess(model.userName, model.userId, model.accessToken, model.authType));
+              dispatch(loginSuccess(model.userName, model.userId, model.authType));
             }
         }).catch((error) => {
             console.log("login fail", error);
@@ -198,12 +205,11 @@ export function getStatus() {
     };
 }
 
-export function getStatusSuccess(userName, userId, accessToken, authType) {
+export function getStatusSuccess(userName, userId, authType) {
     return {
         type: AUTH_GET_STATUS_SUCCESS,
         userName,
         userId,
-        accessToken,
         authType
     };
 }
@@ -251,12 +257,11 @@ export function login() {
     };
 }
 
-export function loginSuccess(userName, userId, accessToken, authType) {
+export function loginSuccess(userName, userId, authType) {
     return {
         type: AUTH_LOGIN_SUCCESS,
         userName,
         userId,
-        accessToken,
         authType
     };
 }

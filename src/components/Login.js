@@ -1,5 +1,4 @@
 import React from 'react';
-import { AUTH_GOOGLE } from '../containers/Login';
 
 class Login extends React.Component {
 
@@ -31,11 +30,11 @@ class Login extends React.Component {
   }
 
   handleGoogleLogin(googleUser) {
-      this.handleLogin(AUTH_GOOGLE);
+      this.handleLogin(window.AUTH_GOOGLE);
   }
 
   handleGoogleLoginFail(error) {
-      this.loginFailHandler(AUTH_GOOGLE);
+      this.loginFailHandler(window.AUTH_GOOGLE);
       console.log(error);
   }
 
@@ -64,7 +63,7 @@ class Login extends React.Component {
   naverLoginInit() {
     var naverLogin = new window.naver.LoginWithNaverId({
         clientId: "18F1ahzVnczJShlz01UB",
-        callbackUrl: "https://post.xargus.center/login?action=success&authType=naver",
+        callbackUrl: window.HOST + "login?action=success&authType=naver",
         isPopup: false,
         loginButton: {color: "green", type: 3, height: 53}
       }

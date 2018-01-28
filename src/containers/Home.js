@@ -39,7 +39,7 @@ class Home extends React.Component {
 	}
 
 	handleDelete(memoId, index) {
-			this.props.memoDelete(this.props.userId, this.props.accessToken, memoId, index).then(() => {
+			this.props.memoDelete(this.props.userId, memoId, index).then(() => {
 					this.setState({
 							showProgress: false
 					});
@@ -59,7 +59,7 @@ class Home extends React.Component {
 	}
 
 	handleMemoUpdate(memoId, content, index) {
-			this.props.memoUpdate(this.props.userId, this.props.accessToken, memoId, content, index).then(() => {
+			this.props.memoUpdate(this.props.userId, memoId, content, index).then(() => {
 						this.setState({
 								showProgress: false
 						});
@@ -90,7 +90,7 @@ class Home extends React.Component {
 		});
 
 		console.log("request memo List");
-		this.props.memoListPost(this.props.userId, this.props.accessToken, start, 10, this.props.keyword).then(() => {
+		this.props.memoListPost(this.props.userId, start, 10, this.props.keyword).then(() => {
 					this.setState({
 							showProgress: false
 					});
@@ -114,7 +114,7 @@ class Home extends React.Component {
 						showProgress: true
 				});
 
-        return this.props.memoAddPost(this.props.userId, this.props.accessToken, contents).then(() => {
+        return this.props.memoAddPost(this.props.userId, contents).then(() => {
 							this.setState({
 									showProgress: false
 							});
@@ -151,11 +151,18 @@ class Home extends React.Component {
 							</div>
 					</div>
 				);
+
+				const floatingButton = (
+					<div className="floating-button" >
+						<a className="btn-floating btn-large waves-effect waves-light red"><i className="large material-icons">mode_edit</i></a>
+					</div>
+				);
         return (
             <div className = "wrapper">
 								{this.state.showProgress ? progress : undefined}
                 {this.props.isLoggedIn && this.state.initCompleted ? write : undefined}
 								{this.props.isLoggedIn && this.state.initCompleted ? memoList : undefined}
+								{this.props.isLoggedIn ? floatingButton : undefined}
             </div>
         );
     }
@@ -165,7 +172,6 @@ const mapStateToProps = (state) => {
 	return {
 			isLoggedIn : state.authentication.status.isLoggedIn,
 			userId : state.authentication.userInfo.userId,
-			accessToken : state.authentication.userInfo.accessToken,
       postStatus: state.memo.post,
 			memoList: state.memo.memoList
 	};
@@ -177,20 +183,20 @@ Home.childContextTypes = {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		memoAddPost : (userId, accessToken, contents) => {
-			return dispatch(memoAddPostRequest(userId, accessToken, contents));
+		memoAddPost : (userId, contents) => {
+			return dispatch(memoAddPostRequest(userId, contents));
 		},
-		memoListPost : (userId, accessToken, start, limit, keyword) => {
-			return dispatch(memoListPostRequest(userId, accessToken, start, limit, keyword));
+		memoListPost : (userId, start, limit, keyword) => {
+			return dispatch(memoListPostRequest(userId, start, limit, keyword));
 		},
 		memoClear : () => {
 			return dispatch(memoClear());
 		},
-		memoUpdate: (userId, accessToken, memoId, content, index) => {
-				return dispatch(memoUpdateRequest(userId, accessToken, memoId, content, index));
+		memoUpdate: (userId, memoId, content, index) => {
+				return dispatch(memoUpdateRequest(userId, memoId, content, index));
 		},
-		memoDelete: (userId, accessToken, memoId, index) => {
-				return dispatch(memoDeleteRequest(userId, accessToken, memoId, index));
+		memoDelete: (userId, memoId, index) => {
+				return dispatch(memoDeleteRequest(userId, memoId, index));
 		}
 	};
 }

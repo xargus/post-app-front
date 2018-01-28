@@ -19,15 +19,19 @@ import {
   MEMO_URL
 } from './APIInfos'
 
-export function memoDeleteRequest(userId, accessToken, memoId, index) {
+import { getAccessToken } from './authentication'
+
+export function memoDeleteRequest(userId, memoId, index) {
     return (dispatch) => {
         dispatch(memoDelete());
+
+        var token = getAccessToken();
 
         return $.post(MEMO_URL, {
             action: 'DELETE',
             memoId: memoId,
             userId: userId,
-            accessToken: accessToken
+            accessToken: token
         })
         .done((response) => {
             var jsonResult = JSON.parse(response);
@@ -44,16 +48,18 @@ export function memoDeleteRequest(userId, accessToken, memoId, index) {
     }
 }
 
-export function memoUpdateRequest(userId, accessToken, memoId, content, index) {
+export function memoUpdateRequest(userId, memoId, content, index) {
     return (dispatch) => {
         dispatch(memoUpdate());
+
+        var token = getAccessToken();
 
         return $.post(MEMO_URL, {
             action: 'UPDATE',
             memoId: memoId,
             content: content,
             userId: userId,
-            accessToken: accessToken
+            accessToken: token
         })
         .done((response) => {
             var jsonResult = JSON.parse(response);
@@ -79,15 +85,17 @@ export function memoClear() {
     }
 }
 
-export function memoAddPostRequest(userId, accessToken, contents) {
+export function memoAddPostRequest(userId, contents) {
     return (dispatch) => {
         dispatch(memoAddPost());
+
+        var token = getAccessToken();
 
         return $.post(MEMO_URL, {
             action: 'INSERT',
             content: contents,
             userId: userId,
-            accessToken: accessToken
+            accessToken: token
         })
         .done((response) => {
           var jsonResult = JSON.parse(response);
@@ -103,9 +111,11 @@ export function memoAddPostRequest(userId, accessToken, contents) {
     };
 }
 
-export function memoListPostRequest(userId, accessToken, start, limit, keyword) {
+export function memoListPostRequest(userId, start, limit, keyword) {
     return (dispatch) => {
         dispatch(memoListPost());
+
+        var token = getAccessToken();
 
         console.log("request memo", userId, start, limit, keyword);
         const selectParm = {
@@ -113,14 +123,14 @@ export function memoListPostRequest(userId, accessToken, start, limit, keyword) 
           start: start,
           limit: limit,
           userId: userId,
-          accessToken: accessToken
+          accessToken: token
         };
         const searchParm = {
           action: 'SEARCH',
           start: start,
           limit: limit,
           userId: userId,
-          accessToken: accessToken,
+          accessToken: token,
           content: keyword
         };
 

@@ -111,7 +111,7 @@ export function memoAddPostRequest(userId, contents) {
     };
 }
 
-export function memoListPostRequest(userId, start, limit, keyword) {
+export function memoListPostRequest(userId, start, limit, keyword, timeStamp) {
     return (dispatch) => {
         dispatch(memoListPost());
 
@@ -123,7 +123,8 @@ export function memoListPostRequest(userId, start, limit, keyword) {
           start: start,
           limit: limit,
           userId: userId,
-          accessToken: token
+          accessToken: token,
+          time: timeStamp
         };
         const searchParm = {
           action: 'SEARCH',

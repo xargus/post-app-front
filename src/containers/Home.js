@@ -25,7 +25,7 @@ class Home extends React.Component {
 				isWattingForRequest: false,
 				transitionLeave: true,
 				showProgress: false,
-				time: ''
+				timeStamp: ''
 		};
 	}
 
@@ -84,19 +84,26 @@ class Home extends React.Component {
 		}
 
 		const start = this.props.memoList.length;
+
 		this.setState({
 				isWattingForRequest: true
 		});
 
 		console.log("request memo List");
-		this.props.memoListPost(this.props.userId, start, 10, this.props.keyword).then(() => {
+		this.props.memoListPost(this.props.userId, start, 10, this.props.keyword, this.state.timeStamp).then(() => {
 					this.setState({
 							showProgress: false,
 							isWattingForRequest: false,
 							transitionLeave: true
 					});
 
-					console.log("memo List result",this.props.memoList.length, this.props.totalLength);
+					if (start === 0 ) {
+						this.setState({
+								timeStamp: window.getTimeStamp()
+						});
+					}
+
+					console.log("memo List result",this.props.memoList.length, this.props.totalLength, this.state.timeStamp);
 		});
 
 		this.setState({
@@ -183,8 +190,8 @@ const mapDispatchToProps = (dispatch) => {
 		memoAddPost : (userId, contents) => {
 			return dispatch(memoAddPostRequest(userId, contents));
 		},
-		memoListPost : (userId, start, limit, keyword) => {
-			return dispatch(memoListPostRequest(userId, start, limit, keyword));
+		memoListPost : (userId, start, limit, keyword, timeStamp) => {
+			return dispatch(memoListPostRequest(userId, start, limit, keyword, timeStamp));
 		},
 		memoClear : () => {
 			return dispatch(memoClear());

@@ -6,7 +6,8 @@ const initialState = {
 		status : 'INIT',
 		error : ''
 	},
-	memoList: []
+	memoList: [],
+	totalLength : 0
 };
 
 export default function memo(state, action) {
@@ -50,7 +51,8 @@ export default function memo(state, action) {
 						status : { $set : 'LIST_POST_SUCCESS' },
 						error : { $set : ''}
 					},
-					memoList : { $push: action.memoList }
+					memoList : { $push: action.memoList },
+					totalLength : { $set : action.totalLength }
 				});
 		case types.MEMO_LIST_POST_FAILURE:
 				return update(state, {
@@ -105,7 +107,8 @@ export default function memo(state, action) {
 								status : { $set: 'DELETE_SUCCESS' },
 								error : { $set : '' }
 						},
-						memoList: { $splice : [[action.index, 1]]}
+						memoList: { $splice : [[action.index, 1]]},
+						totalLength: { $set : action.totalLength }
 				});
 		case types.MEMO_DELETE_FAILURE:
 				return update(state, {

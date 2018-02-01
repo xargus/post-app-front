@@ -10,7 +10,7 @@ class MemoList extends React.Component {
 		this.props.requestMemoList();
 
     $(window).scroll(() => {
-					if (!this.props.isWattingForRequest && $(document).height() - $(window).height() - $(window).scrollTop() < 10) {
+					if (!this.props.isWattingForRequest && this.props.totalLength > this.props.memoInfos.length && $(document).height() - $(window).height() - $(window).scrollTop() < 10) {
 							this.props.requestMemoList();
 					}
 		});

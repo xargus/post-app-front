@@ -23,9 +23,9 @@ class Home extends React.Component {
 		this.state = {
 				initCompleted: false,
 				isWattingForRequest: false,
-				count: 0,
 				transitionLeave: true,
-				showProgress: false
+				showProgress: false,
+				time: ''
 		};
 	}
 
@@ -39,7 +39,7 @@ class Home extends React.Component {
 	}
 
 	handleDelete(memoId, index) {
-			this.props.memoDelete(this.props.userId, memoId, index).then(() => {
+			this.props.memoDelete(this.props.userId, memoId, index, this.props.totalLength).then(() => {
 					this.setState({
 							showProgress: false
 					});
@@ -85,23 +85,18 @@ class Home extends React.Component {
 
 		const start = this.props.memoList.length;
 		this.setState({
-				isWattingForRequest: true,
-				count: start
+				isWattingForRequest: true
 		});
 
 		console.log("request memo List");
 		this.props.memoListPost(this.props.userId, start, 10, this.props.keyword).then(() => {
 					this.setState({
-							showProgress: false
+							showProgress: false,
+							isWattingForRequest: false,
+							transitionLeave: true
 					});
 
-					console.log("memo List result",this.props.memoList.length, this.state.count);
-					if (this.props.memoList.length > this.state.count) {
-							this.setState({
-									isWattingForRequest: false,
-									transitionLeave: true
-							});
-					}
+					console.log("memo List result",this.props.memoList.length, this.props.totalLength);
 		});
 
 		this.setState({
@@ -143,7 +138,8 @@ class Home extends React.Component {
 														isWattingForRequest = { this.state.isWattingForRequest }
 														memoUpdate = { this.handleMemoUpdate }
 														memoDelete = { this.handleDelete }
-														transitionLeave = {this.state.transitionLeave} />);
+														transitionLeave = {this.state.transitionLeave}
+														totalLength = {this.props.totalLength} />);
 				const progress = (
 					<div className = "progress-container">
 							<div className = "progress">
@@ -173,7 +169,8 @@ const mapStateToProps = (state) => {
 			isLoggedIn : state.authentication.status.isLoggedIn,
 			userId : state.authentication.userInfo.userId,
       postStatus: state.memo.post,
-			memoList: state.memo.memoList
+			memoList: state.memo.memoList,
+			totalLength: state.memo.totalLength
 	};
 }
 

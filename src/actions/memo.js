@@ -21,7 +21,7 @@ import {
 
 import { getAccessToken } from './authentication'
 
-export function memoDeleteRequest(userId, memoId, index) {
+export function memoDeleteRequest(userId, memoId, index, totalLength) {
     return (dispatch) => {
         dispatch(memoDelete());
 
@@ -37,7 +37,7 @@ export function memoDeleteRequest(userId, memoId, index) {
             var jsonResult = JSON.parse(response);
             console.log("memo delete result", jsonResult);
             if (jsonResult.result === 'SUCCESS') {
-                dispatch(memoDeleteSuccess(index));
+                dispatch(memoDeleteSuccess(index, totalLength - 1));
             } else {
                 dispatch(memoDeleteFailure());
             }
@@ -139,7 +139,7 @@ export function memoListPostRequest(userId, start, limit, keyword) {
             console.log("memo list api result", response);
             var jsonResult = JSON.parse(response);
             if (jsonResult.result === 'SUCCESS') {
-                dispatch(memoListPostSuccess(jsonResult.memoList));
+                dispatch(memoListPostSuccess(jsonResult.memoList, jsonResult.totalLength));
             } else {
                 dispatch(memoListPostFailure());
             }
@@ -163,10 +163,11 @@ export function memoListPost() {
     };
 }
 
-export function memoListPostSuccess(memoList = []) {
+export function memoListPostSuccess(memoList = [], totalLength = 0) {
     return {
         type: MEMO_LIST_POST_SUCCESS,
-        memoList
+        memoList,
+        totalLength
     };
 }
 
@@ -223,10 +224,11 @@ export function memoDelete() {
     }
 }
 
-export function memoDeleteSuccess(index) {
+export function memoDeleteSuccess(index, totalLength) {
     return {
         type: MEMO_DELETE_SUCCESS,
-        index: index
+        index: index,
+        totalLength
     }
 }
 

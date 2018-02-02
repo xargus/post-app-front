@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Write, MemoList } from '../components';
-import {memoAddPostRequest, memoListPostRequest, memoClear, memoUpdateRequest, memoDeleteRequest} from '../actions/memo';
+import { memoListPostRequest, memoClear, memoUpdateRequest, memoDeleteRequest} from '../actions/memo';
 import CircularProgress from 'material-ui/CircularProgress';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -15,10 +15,10 @@ class Home extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.handleAddPost = this.handleAddPost.bind(this);
 		this.handleMemoListRequest = this.handleMemoListRequest.bind(this);
 		this.handleMemoUpdate = this.handleMemoUpdate.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
+		this.handleWriteClick = this.handleWriteClick.bind(this);
 
 		this.state = {
 				initCompleted: false,
@@ -111,34 +111,11 @@ class Home extends React.Component {
 		});
 	}
 
-	handleAddPost(contents) {
-				this.setState({
-						showProgress: true
-				});
-
-        return this.props.memoAddPost(this.props.userId, contents).then(() => {
-							this.setState({
-									showProgress: false
-							});
-
-            	const Materialize = window.Materialize;
-                if(this.props.postStatus.status === 'ADD_POST_SUCCESS') {
-                    Materialize.toast('Success!', 2000);
-
-										this.setState({
-											transitionLeave: false
-										});
-										this.props.memoClear();
-										this.handleMemoListRequest();
-                } else {
-                    Materialize.toast('Fail...', 2000);
-                }
-            }
-        );
-    }
+		handleWriteClick() {
+				this.props.history.push('/write');
+		}
 
     render() {
-    	const write = (<Write onPost = {this.handleAddPost} />);
 			const memoList = (<MemoList
 														memoInfos = {this.props.memoList}
 														requestMemoList = {this.handleMemoListRequest}
@@ -156,14 +133,13 @@ class Home extends React.Component {
 				);
 
 				const floatingButton = (
-					<div className="floating-button" >
-						<a className="btn-floating btn-large waves-effect waves-light red"><i className="large material-icons">mode_edit</i></a>
+					<div className="floating-button">
+						<a className="btn-floating btn-large waves-effect waves-light red" onClick = {this.handleWriteClick} ><i className="large material-icons">mode_edit</i></a>
 					</div>
 				);
         return (
             <div className = "wrapper">
 								{this.state.showProgress ? progress : undefined}
-                {this.props.isLoggedIn && this.state.initCompleted ? write : undefined}
 								{this.props.isLoggedIn && this.state.initCompleted ? memoList : undefined}
 								{this.props.isLoggedIn ? floatingButton : undefined}
             </div>
@@ -187,9 +163,6 @@ Home.childContextTypes = {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		memoAddPost : (userId, contents) => {
-			return dispatch(memoAddPostRequest(userId, contents));
-		},
 		memoListPost : (userId, start, limit, keyword, timeStamp) => {
 			return dispatch(memoListPostRequest(userId, start, limit, keyword, timeStamp));
 		},

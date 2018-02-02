@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './style.css';
-import { Home, Login, Wall } from './containers';
+import { Home, Login, Wall, Write } from './containers';
 import { App } from './containers';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 // Redux
@@ -22,6 +22,7 @@ ReactDOM.render(
         <Route path="/home" component={Home}/>
         <Route path="/login" component={Login}/>
 				<Route path="/wall/:search_keyword" component={Wall}/>
+				<Route path="/write" component={Write}/>
 			</div>
   		</Router>
   	</Provider>, rootElement

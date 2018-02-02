@@ -21,12 +21,7 @@ class Write extends React.Component {
 	handlePost() {
 		let contents = this.state.contents;
 
-		this.props.onPost(contents).then(
-			() => {
-				this.setState({
-					contents : ''
-				});
-			});
+		this.props.onPost(contents);
 	}
 
 	render() {
@@ -34,7 +29,7 @@ class Write extends React.Component {
 			<div className="container write">
 				<div className = "card">
 					<div className = "card-content">
-						<textarea className = "materialize-textarea" 
+						<textarea className = "materialize-textarea"
 							placeholder = "Write down your memo"
 							value = {this.state.contents}
 							onChange = {this.handleChange}></textarea>

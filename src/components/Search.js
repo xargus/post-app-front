@@ -21,18 +21,23 @@ class Search extends React.Component {
   }
 
   componentDidMount() {
+    console.log("componentDidMount");
     var search = this;
     $('input').keydown( function(e) {
        var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
        if(key === 13) {
+         console.log("keyword", search.state.keyword, search.props.history);
          search.props.history.push("/wall/" + search.state.keyword);
          search.handleClose();
        }
    });
   }
 
-  handleClose() {
+  componentWillUnmount() {
       document.onkeydown = null;
+  }
+
+  handleClose() {
       this.props.onClose();
   }
 

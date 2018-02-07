@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Write, MemoList } from '../components';
+import { MemoList } from '../components';
 import { memoListPostRequest, memoClear, memoUpdateRequest, memoDeleteRequest} from '../actions/memo';
 import CircularProgress from 'material-ui/CircularProgress';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
@@ -21,7 +21,6 @@ class Home extends React.Component {
 		this.handleWriteClick = this.handleWriteClick.bind(this);
 
 		this.state = {
-				initCompleted: false,
 				isWattingForRequest: false,
 				transitionLeave: true,
 				showProgress: false,
@@ -30,12 +29,13 @@ class Home extends React.Component {
 	}
 
 	componentDidMount(){
-		this.props.memoClear().then((result) => {
-				this.setState({
-					initCompleted: true
-				});
-		});
-		console.log("Home componentDidMount", this.props.memoList);
+		var path = this.props.location === undefined ? undefined : this.props.location.pathname;
+		console.log("Home componentDidMount", path);
+		if (path !== undefined && path.indexOf("home") === -1) {
+			this.props.memoClear().then((result) => {
+					this.props.history.replace("/home");
+			});
+		}
 	}
 
 	handleDelete(memoId, index) {
@@ -140,7 +140,7 @@ class Home extends React.Component {
         return (
             <div className = "wrapper">
 								{this.state.showProgress ? progress : undefined}
-								{this.props.isLoggedIn && this.state.initCompleted ? memoList : undefined}
+								{this.props.isLoggedIn ? memoList : undefined}
 								{this.props.isLoggedIn ? floatingButton : undefined}
             </div>
         );

@@ -7,14 +7,22 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 class MemoList extends React.Component {
 
   componentDidMount() {
-		this.props.requestMemoList();
+    if ( this.props.memoInfos.length === 0 ) {
+		    this.props.requestMemoList();
+    }
 
     $(window).scroll(() => {
 					if (!this.props.isWattingForRequest && this.props.totalLength > this.props.memoInfos.length && $(document).height() - $(window).height() - $(window).scrollTop() < 10) {
-							this.props.requestMemoList();
+              console.log('request by scroll down');
+              this.props.requestMemoList();
 					}
 		});
 	}
+
+  componentWillUnmount(){
+    console.log("componentWillUnmount");
+    $(window).unbind('scroll');
+  }
 
   render() {
     const mapToCompoents = (memoInfos) => {
@@ -30,7 +38,7 @@ class MemoList extends React.Component {
         });
     };
     return (
-      <div>
+      <div className = "memoList">
           <ReactCSSTransitionGroup
                         transitionName="memo"
                         transitionLeave={this.props.transitionLeave}

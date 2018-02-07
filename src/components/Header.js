@@ -17,12 +17,17 @@ class Header extends React.Component {
         this.handleSearchClose = this.handleSearchClose.bind(this);
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.handleLoginClose = this.handleLoginClose.bind(this);
+        this.handleHomeClick = this.handleHomeClick.bind(this);
     }
 
     handleSearchClick() {
         this.setState({
             showSearch : !this.state.showSearch
         });
+    }
+
+    handleHomeClick() {
+        this.props.history.replace('/');
     }
 
     handleLoginClose() {
@@ -63,7 +68,7 @@ class Header extends React.Component {
             <div>
                 <nav>
                     <div className="nav-wrapper blue darken-1">
-                        <Link to="/" className="brand-logo center">MEMOPAD</Link>
+                        <a href = "#" onClick = { this.handleHomeClick } className="brand-logo center">MEMOPAD</a>
 
                         <ul>
                             <li><a onClick = {this.handleSearchClick}><i className="material-icons">search</i></a></li>

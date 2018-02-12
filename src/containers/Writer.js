@@ -30,12 +30,12 @@ class Writer extends React.Component {
       }
   }
 
-  handleAddPost(contents) {
+  handleAddPost(title, contents) {
 				this.setState({
 						showProgress: true
 				});
 
-        return this.props.memoAddPost(this.props.userId, contents).then(() => {
+        return this.props.memoAddPost(this.props.userId, title, contents).then(() => {
             	const Materialize = window.Materialize;
                 if(this.props.postStatus.status === 'ADD_POST_SUCCESS') {
                     setTimeout(() => {
@@ -85,8 +85,8 @@ Writer.childContextTypes = {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		memoAddPost : (userId, contents) => {
-			return dispatch(memoAddPostRequest(userId, contents));
+		memoAddPost : (userId, title, contents) => {
+			return dispatch(memoAddPostRequest(userId, title, contents));
 		},
 		memoUpdate: (userId, memoId, content, index) => {
 				return dispatch(memoUpdateRequest(userId, memoId, content, index));

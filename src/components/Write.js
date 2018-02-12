@@ -6,10 +6,18 @@ class Write extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			contents : ''
+			contents : '',
+			title: ''
 		};
 		this.handleChange = this.handleChange.bind(this);
+		this.handleTitleChange = this.handleTitleChange.bind(this);
 		this.handlePost = this.handlePost.bind(this);
+	}
+
+	handleTitleChange(e) {
+		this.setState({
+			title : e.target.value
+		});
 	}
 
 	handleChange(e) {
@@ -19,14 +27,25 @@ class Write extends React.Component {
 	}
 
 	handlePost() {
+		let title = this.state.title;
 		let contents = this.state.contents;
 
-		this.props.onPost(contents);
+		this.props.onPost(title, contents);
 	}
 
 	render() {
 		return (
 			<div className="container write">
+				<div className = "card">
+					<div className = "card-content-title">
+						<div className = "card-content">
+							<textarea className = "materialize-textarea"
+								placeholder = "Write down your title"
+								value = {this.state.title}
+								onChange = {this.handleTitleChange}></textarea>
+						</div>
+					</div>
+				</div>
 				<div className = "card">
 					<div className = "card-content">
 						<textarea className = "materialize-textarea"

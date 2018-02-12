@@ -54,7 +54,7 @@ class Memo extends React.Component {
     const memoView = (
       <div className = 'card'>
           <div className = 'info'>
-              <a className = 'username'>'title'</a> <TimeAgo date={this.props.memoInfo.updateDate}/>
+              <a className = 'title'>{this.props.memoInfo.title}</a> <TimeAgo date={this.props.memoInfo.updateDate}/>
               { dropDownButton }
               <div className = 'card-content'>
                   {this.props.memoInfo.content}

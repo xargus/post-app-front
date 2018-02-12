@@ -85,7 +85,7 @@ export function memoClear() {
     }
 }
 
-export function memoAddPostRequest(userId, contents) {
+export function memoAddPostRequest(userId, title, contents) {
     return (dispatch) => {
         dispatch(memoAddPost());
 
@@ -93,6 +93,7 @@ export function memoAddPostRequest(userId, contents) {
 
         return $.post(MEMO_URL, {
             action: 'INSERT',
+            title: title,
             content: contents,
             userId: userId,
             accessToken: token

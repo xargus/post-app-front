@@ -53,6 +53,10 @@ body {
     font-size: 18px;
 }
 
+.write .card-content-title {
+    padding-bottom: 30px;
+}
+
 .write .card-content {
     padding-bottom: 10px;
 }
@@ -76,7 +80,7 @@ body {
     color: #90A4AE;
 }
 
-.memo .info .username {
+.memo .info .title {
     color: #263238;
     font-weight: bold;
     cursor: pointer;

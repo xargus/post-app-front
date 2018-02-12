@@ -8,9 +8,10 @@ class Wall extends React.Component {
         super(props);
 
         this.state = {
-            initCompleted: false
+            initCompleted: false,
+            keyword: this.props.match.params.search_keyword
         };
-        console.log("search keyword : " + this.props.match.params.search_keyword);
+        console.log("search keyword : " + this.state.keyword);
     }
 
     componentDidMount() {
@@ -21,6 +22,22 @@ class Wall extends React.Component {
       });
     }
 
+    componentDidUpdate(prevProps, prevState){
+      console.log("componentDidUpdate search keyword : " + this.props.match.params.search_keyword);
+      if (this.props.match.params.search_keyword !== this.state.keyword) {
+          this.setState({
+              keyword: this.props.match.params.search_keyword,
+              initCompleted: false
+          });
+
+          this.props.memoClear().then((result) => {
+              this.setState({
+                initCompleted: true
+              });
+          });
+      }
+    }
+
     componentWillUnmount(){
       console.log("componentWillUnmount");
       this.props.history.replace("/");
@@ -29,7 +46,7 @@ class Wall extends React.Component {
     render() {
         return(
           <div>
-              { this.state.initCompleted ? <Home keyword={this.props.match.params.search_keyword}></Home> : undefined }
+              { this.state.initCompleted ? <Home keyword={this.state.keyword}></Home> : undefined }
           </div>
         );
     }

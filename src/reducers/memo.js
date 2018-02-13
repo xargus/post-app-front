@@ -6,6 +6,7 @@ const initialState = {
 		status : 'INIT',
 		error : ''
 	},
+	memoDetail: undefined,
 	memoList: [],
 	totalLength : 0
 };
@@ -44,6 +45,22 @@ export default function memo(state, action) {
 							status : { $set : 'LIST_POST_WATTING' },
 							error : { $set : ''}
 						}
+				});
+		case types.MEMO_DETAIL_POST_SUCCESS:
+				return update(state, {
+							post : {
+								status : { $set : 'DETAIL_POST_SUCCESS' },
+								error : { $set : ''}
+							},
+							memoDetail : { $set: action.memo }
+				});
+		case types.MEMO_DETAIL_POST_FAILURE:
+				return update(state, {
+								post : {
+									status : { $set : 'DETAIL_POST_FAILURE' },
+									error : { $set : action.error}
+								},
+								memoDetail : { $set: '' }
 				});
 		case types.MEMO_LIST_POST_SUCCESS:
 				return update(state, {

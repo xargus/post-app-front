@@ -14,6 +14,14 @@ class Memo extends React.Component {
     this.toggleEdit = this.toggleEdit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+      console.log("Memo handleClick");
+      if (this.props.memoClick !== undefined) {
+        this.props.memoClick(this.props.memoInfo);
+      }
   }
 
   handleDelete() {
@@ -53,7 +61,7 @@ class Memo extends React.Component {
 
     const memoView = (
       <div className = 'card'>
-          <div className = 'info'>
+          <div className = 'info' onClick = {this.handleClick}>
               <a className = 'title'>{this.props.memoInfo.title}</a> <TimeAgo date={this.props.memoInfo.updateDate}/>
               { dropDownButton }
               <div className = 'card-content'>

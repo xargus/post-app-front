@@ -19,6 +19,7 @@ class Home extends React.Component {
 		this.handleMemoUpdate = this.handleMemoUpdate.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
 		this.handleWriteClick = this.handleWriteClick.bind(this);
+		this.handleMemoClick = this.handleMemoClick.bind(this);
 
 		this.state = {
 				isWattingForRequest: false,
@@ -36,6 +37,11 @@ class Home extends React.Component {
 					this.props.history.replace("/home");
 			});
 		}
+	}
+
+	handleMemoClick(memoInfo) {
+			console.log("handleMemoClick", memoInfo);
+			this.props.history.push("/MemoDetail?id=" + memoInfo._id);
 	}
 
 	handleDelete(memoId, index) {
@@ -117,6 +123,7 @@ class Home extends React.Component {
 
     render() {
 			const memoList = (<MemoList
+														handleMemoClick = {this.handleMemoClick}
 														memoInfos = {this.props.memoList}
 														requestMemoList = {this.handleMemoListRequest}
 														isWattingForRequest = { this.state.isWattingForRequest }

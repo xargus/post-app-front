@@ -33,7 +33,8 @@ class MemoList extends React.Component {
                     key = {memo._id}
                     memoUpdate = { this.props.memoUpdate }
                     memoDelete = { this.props.memoDelete }
-                    index = {i}/>
+                    index = {i}
+                    memoClick = {this.props.handleMemoClick}/>
             );
         });
     };

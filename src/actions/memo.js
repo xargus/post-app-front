@@ -12,7 +12,9 @@ import {
     MEMO_UPDATE_FAILURE,
     MEMO_DELETE,
     MEMO_DELETE_SUCCESS,
-    MEMO_DELETE_FAILURE
+    MEMO_DELETE_FAILURE,
+    MEMO_DETAIL_POST_SUCCESS,
+    MEMO_DETAIL_POST_FAILURE
 } from './ActionTypes';
 
 import {
@@ -112,6 +114,33 @@ export function memoAddPostRequest(userId, title, contents) {
     };
 }
 
+export function memoDetailPostRequest(userId, id) {
+    return (dispatch) => {
+        var token = getAccessToken();
+        const selectParm = {
+          action: 'SELECT',
+          userId: userId,
+          accessToken: token,
+          memoId: id
+        };
+
+        return $.post(MEMO_URL, selectParm)
+                .done((response) => {
+                    console.log("memo api result", response);
+                    var jsonResult = JSON.parse(response);
+                    if (jsonResult.result === 'SUCCESS') {
+                        dispatch(memoDetailPostSuccess(jsonResult.memoModel));
+                    } else {
+                        dispatch(memoDetailPostFailur());
+                    }
+                })
+                .catch((error) => {
+                    console.log("memo detail error : " + error);
+                    dispatch(memoDetailPostFailur(error));
+                });
+    };
+}
+
 export function memoListPostRequest(userId, start, limit, keyword, timeStamp) {
     return (dispatch) => {
         dispatch(memoListPost());
@@ -162,6 +191,20 @@ export function memoClearReturn() {
 export function memoListPost() {
     return {
         type: MEMO_LIST_POST
+    };
+}
+
+export function memoDetailPostSuccess(memo) {
+    return {
+        type: MEMO_DETAIL_POST_SUCCESS,
+        memo
+    };
+}
+
+export function memoDetailPostFailur(error = '') {
+    return {
+        type: MEMO_DETAIL_POST_FAILURE,
+        error
     };
 }
 

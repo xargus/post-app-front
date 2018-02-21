@@ -7,11 +7,22 @@ class Write extends React.Component {
 		super(props);
 		this.state = {
 			contents : '',
-			title: ''
+			title: '',
+			isEditMode: false
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.handleTitleChange = this.handleTitleChange.bind(this);
 		this.handlePost = this.handlePost.bind(this);
+	}
+
+	componentDidMount() {
+		this.setState({
+				contents : this.props.memoDetail === undefined ? '' : this.props.memoDetail.content,
+				title : this.props.memoDetail === undefined ? '' : this.props.memoDetail.title,
+				isEditMode : this.props.memoDetail === undefined ? false : true
+		});
+
+		console.log("Write componentDidMount " + this.state.isEditMode);
 	}
 
 	handleTitleChange(e) {
@@ -30,7 +41,12 @@ class Write extends React.Component {
 		let title = this.state.title;
 		let contents = this.state.contents;
 
-		this.props.onPost(title, contents);
+		console.log("Write handlePost " + this.state.isEditMode);
+		if (this.state.isEditMode) {
+			this.props.handleEdit(this.props.memoDetail._id, title, contents);
+		} else {
+			this.props.handlePost(title, contents);
+		}
 	}
 
 	render() {
@@ -53,7 +69,7 @@ class Write extends React.Component {
 							value = {this.state.contents}
 							onChange = {this.handleChange}></textarea>
 						<div className = "card-action">
-							<a onClick = {this.handlePost}>POST</a>
+							<a onClick = {this.handlePost}>{this.state.isEditMode === true ? 'EDIT' : 'POST'}</a>
 						</div>
 					</div>
 				</div>

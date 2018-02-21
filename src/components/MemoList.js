@@ -31,8 +31,6 @@ class MemoList extends React.Component {
                 <Memo
                     memoInfo = {memo}
                     key = {memo._id}
-                    memoUpdate = { this.props.memoUpdate }
-                    memoDelete = { this.props.memoDelete }
                     index = {i}
                     memoClick = {this.props.handleMemoClick}/>
             );
@@ -54,14 +52,10 @@ class MemoList extends React.Component {
 
 MemoList.propTypes = {
     memoInfos: PropTypes.array,
-    memoUpdate: PropTypes.func
 };
 
 MemoList.defaultProps = {
     memoInfos: [],
-    memoUpdate: (memoId, content) => {
-        console.log("memoUpdate function is Null");
-    },
     transitionLeave: true
 };
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { MemoList } from '../components';
-import { memoListPostRequest, memoClear, memoUpdateRequest, memoDeleteRequest} from '../actions/memo';
+import { memoListPostRequest, memoClear} from '../actions/memo';
 import CircularProgress from 'material-ui/CircularProgress';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -16,8 +16,6 @@ class Home extends React.Component {
 	constructor(props) {
 		super(props);
 		this.handleMemoListRequest = this.handleMemoListRequest.bind(this);
-		this.handleMemoUpdate = this.handleMemoUpdate.bind(this);
-		this.handleDelete = this.handleDelete.bind(this);
 		this.handleWriteClick = this.handleWriteClick.bind(this);
 		this.handleMemoClick = this.handleMemoClick.bind(this);
 
@@ -32,7 +30,7 @@ class Home extends React.Component {
 	componentDidMount(){
 		var path = this.props.location === undefined ? undefined : this.props.location.pathname;
 		console.log("Home componentDidMount", path);
-		if (path !== undefined && path.indexOf("home") === -1) {
+		if ((path !== undefined && path.indexOf("home") === -1)) {
 			this.props.memoClear().then((result) => {
 					this.props.history.replace("/home");
 			});
@@ -42,46 +40,6 @@ class Home extends React.Component {
 	handleMemoClick(memoInfo) {
 			console.log("handleMemoClick", memoInfo);
 			this.props.history.push("/MemoDetail?id=" + memoInfo._id);
-	}
-
-	handleDelete(memoId, index) {
-			this.props.memoDelete(this.props.userId, memoId, index, this.props.totalLength).then(() => {
-					this.setState({
-							showProgress: false
-					});
-
-					console.log("home delete result",this.props.memoList);
-					const Materialize = window.Materialize;
-					if (this.props.postStatus.status === 'DELETE_SUCCESS') {
-							Materialize.toast('Memo Delete Success!', 2000);
-					} else {
-							Materialize.toast('Memo Delete Fail...', 2000);
-					}
-			});
-
-			this.setState({
-					showProgress: true
-			});
-	}
-
-	handleMemoUpdate(memoId, content, index) {
-			this.props.memoUpdate(this.props.userId, memoId, content, index).then(() => {
-						this.setState({
-								showProgress: false
-						});
-
-						console.log("home update result",this.props.memoList);
-						const Materialize = window.Materialize;
-						if (this.props.postStatus.status === 'UPDATE_SUCCESS') {
-								Materialize.toast('Memo Update Success!', 2000);
-						} else {
-								Materialize.toast('Memo Update Fail...', 2000);
-						}
-			});
-
-			this.setState({
-					showProgress: true
-			});
 	}
 
 	handleMemoListRequest() {
@@ -127,8 +85,6 @@ class Home extends React.Component {
 														memoInfos = {this.props.memoList}
 														requestMemoList = {this.handleMemoListRequest}
 														isWattingForRequest = { this.state.isWattingForRequest }
-														memoUpdate = { this.handleMemoUpdate }
-														memoDelete = { this.handleDelete }
 														transitionLeave = {this.state.transitionLeave}
 														totalLength = {this.props.totalLength} />);
 				const progress = (
@@ -175,12 +131,6 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		memoClear : () => {
 			return dispatch(memoClear());
-		},
-		memoUpdate: (userId, memoId, content, index) => {
-				return dispatch(memoUpdateRequest(userId, memoId, content, index));
-		},
-		memoDelete: (userId, memoId, index) => {
-				return dispatch(memoDeleteRequest(userId, memoId, index));
 		}
 	};
 }

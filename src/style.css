@@ -54,7 +54,7 @@ body {
 }
 
 .write .card-content-title {
-    padding-bottom: 30px;
+    padding-bottom: 20px;
 }
 
 .write .card-content {
@@ -79,6 +79,12 @@ body {
     padding: 20px 20px 0px 20px;
     color: #90A4AE;
     cursor: pointer;
+}
+
+.memo .info-detail {
+    font-size: 18px;
+    padding: 20px 20px 0px 20px;
+    color: #90A4AE;
 }
 
 .memo .info .title {

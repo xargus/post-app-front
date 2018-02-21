@@ -14,7 +14,8 @@ import {
     MEMO_DELETE_SUCCESS,
     MEMO_DELETE_FAILURE,
     MEMO_DETAIL_POST_SUCCESS,
-    MEMO_DETAIL_POST_FAILURE
+    MEMO_DETAIL_POST_FAILURE,
+    MEMO_DETAIL_CLEAR
 } from './ActionTypes';
 
 import {
@@ -22,6 +23,12 @@ import {
 } from './APIInfos'
 
 import { getAccessToken } from './authentication'
+
+export function memoDetailClear() {
+    return (dispatch) => {
+        return dispatch(memoDetailClearSuccess());
+    }
+}
 
 export function memoDeleteRequest(userId, memoId, index, totalLength) {
     return (dispatch) => {
@@ -50,7 +57,7 @@ export function memoDeleteRequest(userId, memoId, index, totalLength) {
     }
 }
 
-export function memoUpdateRequest(userId, memoId, content, index) {
+export function memoUpdateRequest(userId, memoId, title, content) {
     return (dispatch) => {
         dispatch(memoUpdate());
 
@@ -59,6 +66,7 @@ export function memoUpdateRequest(userId, memoId, content, index) {
         return $.post(MEMO_URL, {
             action: 'UPDATE',
             memoId: memoId,
+            title: title,
             content: content,
             userId: userId,
             accessToken: token
@@ -67,7 +75,7 @@ export function memoUpdateRequest(userId, memoId, content, index) {
             var jsonResult = JSON.parse(response);
             console.log("memo update result", jsonResult);
             if (jsonResult.result === 'SUCCESS') {
-                dispatch(memoUpdateSuccess(index, content));
+                dispatch(memoUpdateSuccess());
             } else {
                 dispatch(memoUpdateFailure());
             }
@@ -248,11 +256,9 @@ export function memoUpdate() {
     }
 }
 
-export function memoUpdateSuccess(index, content) {
+export function memoUpdateSuccess() {
     return {
-      type : MEMO_UPDATE_SUCCESS,
-      index : index,
-      content : content
+      type : MEMO_UPDATE_SUCCESS
     }
 }
 
@@ -266,6 +272,12 @@ export function memoUpdateFailure(error = '') {
 export function memoDelete() {
     return {
         type: MEMO_DELETE
+    }
+}
+
+export function memoDetailClearSuccess() {
+    return {
+        type: MEMO_DETAIL_CLEAR
     }
 }
 

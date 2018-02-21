@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Write } from '../components';
-import {memoAddPostRequest, memoUpdateRequest, memoDeleteRequest} from '../actions/memo';
+import {memoAddPostRequest, memoUpdateRequest, memoDetailPostRequest} from '../actions/memo';
 import CircularProgress from 'material-ui/CircularProgress';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -16,9 +16,12 @@ class Writer extends React.Component {
 	constructor(props) {
     super(props);
     this.handleAddPost = this.handleAddPost.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
 
     this.state = {
-      showProgress: false
+      showProgress: false,
+      isEditMode: false,
+      initCompleted: false
     };
   }
 
@@ -28,6 +31,51 @@ class Writer extends React.Component {
           this.props.history.replace('/');
           return;
       }
+
+      var params = new URLSearchParams(this.props.location.search);
+      var id = params.get("id");
+      console.log("Writer componentDidMount id : " + id);
+      if (id !== undefined && id !== null) {
+        this.setState({
+            isEditMode: true,
+            showProgress: true
+        });
+
+        this.props.memoDetailPost(this.props.userId, id).then(() => {
+          this.setState({
+            showProgress: false,
+            initCompleted: true
+          });
+
+          console.log("memoDetailPost", this.props.memoDetail);
+        });
+      } else {
+          this.setState({
+              initCompleted: true
+          });
+      }
+  }
+
+  handleEdit(memoId, title, content) {
+    this.props.memoUpdate(this.props.userId, memoId, title, content).then(() => {
+          this.setState({
+              showProgress: false
+          });
+
+          console.log("home update result",this.props.memoList);
+          const Materialize = window.Materialize;
+          if (this.props.postStatus.status === 'UPDATE_SUCCESS') {
+              Materialize.toast('Memo Update Success!', 2000);
+          } else {
+              Materialize.toast('Memo Update Fail...', 2000);
+          }
+
+          this.props.history.goBack();
+    });
+
+    this.setState({
+        showProgress: true
+    });
   }
 
   handleAddPost(title, contents) {
@@ -53,7 +101,9 @@ class Writer extends React.Component {
     }
 
   render() {
-      const write = (<Write onPost = {this.handleAddPost} />);
+      const write = (<Write handlePost = {this.handleAddPost}
+                            handleEdit = {this.handleEdit}
+                            memoDetail = {this.props.memoDetail}/>);
       const progress = (
         <div className = "progress-container">
             <div className = "progress">
@@ -64,7 +114,7 @@ class Writer extends React.Component {
 
       return (
           <div className = "wrapper">
-            {this.props.isLoggedIn ? write : undefined}
+            {this.props.isLoggedIn && this.state.initCompleted ? write : undefined}
             {this.state.showProgress ? progress : undefined}
           </div>
       );
@@ -75,7 +125,8 @@ const mapStateToProps = (state) => {
 	return {
 			isLoggedIn : state.authentication.status.isLoggedIn,
 			userId : state.authentication.userInfo.userId,
-      postStatus: state.memo.post
+      postStatus: state.memo.post,
+      memoDetail: state.memo.memoDetail
 	};
 }
 
@@ -88,12 +139,12 @@ const mapDispatchToProps = (dispatch) => {
 		memoAddPost : (userId, title, contents) => {
 			return dispatch(memoAddPostRequest(userId, title, contents));
 		},
-		memoUpdate: (userId, memoId, content, index) => {
-				return dispatch(memoUpdateRequest(userId, memoId, content, index));
+		memoUpdate: (userId, memoId, title, content) => {
+				return dispatch(memoUpdateRequest(userId, memoId, title, content));
 		},
-		memoDelete: (userId, memoId, index) => {
-				return dispatch(memoDeleteRequest(userId, memoId, index));
-		}
+    memoDetailPost : (userId, id) => {
+      return dispatch(memoDetailPostRequest(userId, id));
+    }
 	};
 }
 

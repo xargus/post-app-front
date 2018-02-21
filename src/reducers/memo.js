@@ -8,7 +8,8 @@ const initialState = {
 	},
 	memoDetail: undefined,
 	memoList: [],
-	totalLength : 0
+	totalLength : 0,
+	needToRefesh : false
 };
 
 export default function memo(state, action) {
@@ -81,7 +82,8 @@ export default function memo(state, action) {
 				});
 		case types.MEMO_CLEAR:
 				return update(state, {
-						memoList : { $set: [] }
+						memoList : { $set: [] },
+						needToRefesh : {$set: false}
 				});
 
 		case types.MEMO_UPDATE:
@@ -94,14 +96,10 @@ export default function memo(state, action) {
 		case types.MEMO_UPDATE_SUCCESS:
 				return update(state, {
 						post: {
-								status : { $set: 'UPDATE_SUCCESS' },
+								status : { $set: 'MEMO_UPDATE' },
 								error : { $set : ''}
 						},
-						memoList: {
-							[action.index] : {
-								content : { $set : action.content }
-							}
-						}
+						needToRefesh : { $set : true}
 				});
 		case types.MEMO_UPDATE_FAILURE:
 				return update(state, {
@@ -133,6 +131,10 @@ export default function memo(state, action) {
 								status : { $set: 'DELETE_FAILURE' },
 								error : { $set : action.error }
 						}
+				});
+		case types.MEMO_DETAIL_CLEAR:
+				return update(state, {
+						memoDetail : { $set: undefined }
 				});
 		default :
 			return state;

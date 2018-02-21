@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { memoDetailPostRequest } from '../actions/memo';
+import { memoDetailPostRequest, memoDeleteRequest, memoDetailClear } from '../actions/memo';
 import CircularProgress from 'material-ui/CircularProgress';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import PropTypes from 'prop-types';
-import { Memo } from '../components';
+import { MemoDetailView } from '../components';
 
 class MemoDetail extends React.Component {
   getChildContext() {
@@ -52,12 +52,39 @@ class MemoDetail extends React.Component {
     });
   }
 
-  handleDelete(memoId, index) {
+  componentWillUnmount(){
+    console.log("componentWillUnmount");
+    this.props.memoDetailClear();
 
+    if (this.props.needToRefesh) {
+        this.props.history.replace('/');
+    }
   }
 
-  handleMemoUpdate(memoId, content, index) {
+  handleDelete(memoId, index) {
+			this.props.memoDelete(this.props.userId, memoId, index, this.props.totalLength).then(() => {
+					this.setState({
+							showProgress: false
+					});
 
+					console.log("home delete result",this.props.memoList);
+					const Materialize = window.Materialize;
+					if (this.props.postStatus.status === 'DELETE_SUCCESS') {
+							Materialize.toast('Memo Delete Success!', 2000);
+					} else {
+							Materialize.toast('Memo Delete Fail...', 2000);
+					}
+
+          this.props.history.replace('/');
+			});
+
+			this.setState({
+					showProgress: true
+			});
+	}
+
+  handleMemoUpdate(memoInfo) {
+      this.props.history.push("/write?id=" + memoInfo._id);
   }
 
   render() {
@@ -68,9 +95,9 @@ class MemoDetail extends React.Component {
             </div>
         </div>
       );
-      const memo = (<Memo
+      const memo = (<MemoDetailView
           memoInfo = {this.props.memoDetail}
-          memoUpdate = { this.handleMemoUpdate }
+          memoEdit = { this.handleMemoUpdate }
           memoDelete = { this.handleDelete }/>);
 
       return (<div>
@@ -85,7 +112,8 @@ const mapStateToProps = (state) => {
     isLoggedIn : state.authentication.status.isLoggedIn,
     userId : state.authentication.userInfo.userId,
     postStatus: state.memo.post,
-    memoDetail: state.memo.memoDetail
+    memoDetail: state.memo.memoDetail,
+    needToRefesh: state.memo.needToRefesh
 	};
 }
 
@@ -98,6 +126,12 @@ const mapDispatchToProps = (dispatch) => {
     memoDetailPost : (userId, id) => {
       return dispatch(memoDetailPostRequest(userId, id));
     },
+    memoDelete: (userId, memoId, index) => {
+				return dispatch(memoDeleteRequest(userId, memoId, index));
+		},
+    memoDetailClear: () => {
+        return dispatch(memoDetailClear());
+    }
 	};
 }
 
